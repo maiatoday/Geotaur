@@ -30,6 +30,7 @@
     <string name="geofences_updated">Geofences updated</string>
     <string name="permission_rationale">This app is testing geofences and needs location permission to do this.</string>
     <string name="nothing_to_remove">Nothing to remove</string>
+    <string name="test">Test</string>
 
     <string-array name="string_array_enter">
         <item>enter one</item>

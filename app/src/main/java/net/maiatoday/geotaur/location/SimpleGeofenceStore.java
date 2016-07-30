@@ -195,6 +195,22 @@ public class SimpleGeofenceStore {
         return ids;
     }
 
+    public String getGeofenceIdsAsString() {
+        StringBuilder result = new StringBuilder();
+        Set<String> allIdsSet = mPrefs.getStringSet(KEY_ALL_IDS, null);
+        int i = 0;
+        for (String id: allIdsSet) {
+            result.append(id);
+            i++;
+            if (i < allIdsSet.size()) {
+                result.append(",");
+            }
+
+
+        }
+        return result.toString();
+    }
+
 
     /**
      * Given a Geofence object's ID and the name of a field

@@ -27,25 +27,9 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".location.service.DetectedActivitiesIntentService"
-            android:exported="false" />
 
-        <service
-            android:name=".location.service.ActivityDetectService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name=".location.service.GeofenceRefreshService"
-            android:exported="true"
-            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
-            <intent-filter>
-                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
-            </intent-filter>
-        </service>
-        <receiver android:name=".location.service.RefreshGeofenceReceiver" />
         <receiver
-            android:name=".location.service.BootReceiver"
+            android:name=".location.BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -54,16 +38,7 @@
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".location.service.GeofenceReceiver"
-            android:exported="false">
-            <intent-filter >
-                <action android:name="${applicationId}.ACTION_RECEIVE_GEOFENCE"/>
-            </intent-filter>
-        </receiver>
 
-        <service
-            android:name=".location.service.GeofenceUpdateIntentService"
-            android:exported="false" />
     </application>
 
 </manifest>
