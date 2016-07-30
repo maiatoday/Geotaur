@@ -8,7 +8,9 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 
 import net.maiatoday.geotaur.helpers.PreferenceHelper;
+import net.maiatoday.quip.Quip;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -43,5 +45,23 @@ public class ApplicationModule {
     @Singleton
     FirebaseAnalytics provideAnalytics(Context context) {
         return FirebaseAnalytics.getInstance(context);
+    }
+
+    @Provides @Named("enterQuip")
+    @Singleton
+    Quip provideEnterQuip(Context context) {
+        return new Quip(new String[]{"one", "two", "three"});
+    }
+
+    @Provides  @Named("exitQuip")
+    @Singleton
+    Quip provideExitQuip(Context context) {
+        return new Quip(new String[]{"ten", "nine", "eight"});
+    }
+
+    @Provides  @Named("walkQuip")
+    @Singleton
+    Quip provideWalkQuip(Context context) {
+        return new Quip(new String[]{"hrmph", "atishoo", "sigh"});
     }
 }

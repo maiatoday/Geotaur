@@ -17,8 +17,10 @@ import net.maiatoday.geotaur.R;
 import net.maiatoday.geotaur.TaurApplication;
 import net.maiatoday.geotaur.databinding.ActivityMainBinding;
 import net.maiatoday.geotaur.helpers.PreferenceHelper;
+import net.maiatoday.quip.Quip;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class MainActivity extends AppCompatActivity {
     @Inject
@@ -27,7 +29,14 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     FirebaseAnalytics analytics;
 
+    @Inject @Named("enterQuip")
+    Quip enterQuip;
+
+    @Inject @Named("exitQuip")
+    Quip exitQuip;
+
     private boolean firstTime;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         PreferenceHelper.write(prefs, PreferenceHelper.KEY_FIRST_TIME, false);
         analytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, null);
 
-        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
 
@@ -45,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, exitQuip.blurt(), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                binding.included.hello.setText(enterQuip.blurt());
             }
         });
     }

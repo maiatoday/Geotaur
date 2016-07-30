@@ -1,0 +1,3 @@
+[submodule "quip"]
+	path = quip
+	url = git@github.com:maiatoday/Quip.git

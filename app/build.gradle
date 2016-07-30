@@ -59,6 +59,7 @@ dependencies {
     compile "com.google.firebase:firebase-core:$rootProject.firebaseVersion"
     compile "com.google.firebase:firebase-crash:$rootProject.firebaseVersion"
     compile "com.google.firebase:firebase-messaging:$rootProject.firebaseVersion"
+    compile project(path: ':quip')
 }
 
 apply plugin: 'com.google.gms.google-services'
