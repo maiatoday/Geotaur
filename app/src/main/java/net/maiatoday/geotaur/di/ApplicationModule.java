@@ -3,10 +3,12 @@ package net.maiatoday.geotaur.di;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 
+import net.maiatoday.geotaur.R;
 import net.maiatoday.geotaur.helpers.PreferenceHelper;
 import net.maiatoday.quip.Quip;
 
@@ -50,18 +52,24 @@ public class ApplicationModule {
     @Provides @Named("enterQuip")
     @Singleton
     Quip provideEnterQuip(Context context) {
-        return new Quip(new String[]{"one", "two", "three"});
+        Resources res = context.getResources();
+        String[] quips = res.getStringArray(R.array.string_array_enter);
+        return new Quip(quips);
     }
 
     @Provides  @Named("exitQuip")
     @Singleton
     Quip provideExitQuip(Context context) {
-        return new Quip(new String[]{"ten", "nine", "eight"});
+        Resources res = context.getResources();
+        String[] quips = res.getStringArray(R.array.string_array_exit);
+        return new Quip(quips);
     }
 
     @Provides  @Named("walkQuip")
     @Singleton
     Quip provideWalkQuip(Context context) {
-        return new Quip(new String[]{"hrmph", "atishoo", "sigh"});
+        Resources res = context.getResources();
+        String[] quips = res.getStringArray(R.array.string_array_walk);
+        return new Quip(quips);
     }
 }

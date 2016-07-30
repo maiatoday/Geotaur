@@ -1,3 +1,25 @@
 <resources>
     <string name="action_settings">Settings</string>
+
+    <string-array name="string_array_enter">
+        <item>enter one</item>
+        <item>enter two</item>
+        <item>enter three</item>
+        <item>enter four</item>
+    </string-array>
+
+    <string-array name="string_array_exit">
+        <item>exit 1</item>
+        <item>exit 2</item>
+        <item>exit 3</item>
+        <item>exit 4</item>
+    </string-array>
+
+    <string-array name="string_array_walk">
+        <item>walk</item>
+        <item>walking</item>
+        <item>walking on</item>
+        <item>walking on the</item>
+        <item>walking on the moon</item>
+    </string-array>
 </resources>

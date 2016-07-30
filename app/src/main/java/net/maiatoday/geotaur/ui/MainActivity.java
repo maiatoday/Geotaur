@@ -29,11 +29,17 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     FirebaseAnalytics analytics;
 
-    @Inject @Named("enterQuip")
+    @Inject
+    @Named("enterQuip")
     Quip enterQuip;
 
-    @Inject @Named("exitQuip")
+    @Inject
+    @Named("exitQuip")
     Quip exitQuip;
+
+    @Inject
+    @Named("walkQuip")
+    Quip walkQuip;
 
     private boolean firstTime;
     private ActivityMainBinding binding;
@@ -41,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((TaurApplication)getApplication()).getComponent().inject(this);
+        ((TaurApplication) getApplication()).getComponent().inject(this);
         firstTime = prefs.getBoolean(PreferenceHelper.KEY_FIRST_TIME, true);
         PreferenceHelper.write(prefs, PreferenceHelper.KEY_FIRST_TIME, false);
         analytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, null);
@@ -50,13 +56,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
 
-       FloatingActionButton fab = binding.fab;
+        FloatingActionButton fab = binding.fab;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, exitQuip.blurt(), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                binding.included.hello.setText(enterQuip.blurt());
+                binding.included.hello.setText(enterQuip.blurt() + " " + walkQuip.blurt());
             }
         });
     }
