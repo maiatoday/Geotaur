@@ -1,0 +1,146 @@
+package net.maiatoday.geotaur.location.service;
+
+import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+
+import com.google.android.gms.location.ActivityRecognitionResult;
+import com.google.android.gms.location.DetectedActivity;
+
+import net.maiatoday.geotaur.R;
+import net.maiatoday.geotaur.TaurApplication;
+import net.maiatoday.geotaur.location.LocationConstants;
+import net.maiatoday.geotaur.ui.MainActivity;
+import net.maiatoday.geotaur.utils.NotificationUtils;
+import net.maiatoday.quip.Quip;
+
+import java.util.ArrayList;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+/**
+ *
+ */
+public class DetectedActivitiesIntentService extends IntentService {
+    protected static final String TAG = "detection_is";
+    private static final String ACTION_TEST = "testNotification";
+    private static final String EXTRA_IDS = "ids";
+    private String mGeoFenceId = "Unknown";
+
+    @Inject
+    @Named("walkQuip")
+    Quip walkQuip;
+
+    /**
+     * This constructor is required, and calls the super IntentService(String)
+     * constructor with the name for a worker thread.
+     */
+    public DetectedActivitiesIntentService() {
+        // Use the TAG to name the worker thread.
+        super(TAG);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        ((TaurApplication) getApplication()).getComponent().inject(this);
+    }
+
+    /**
+     * Starts this service to fetch outlets
+     *
+     * @see IntentService
+     */
+    public static void testNotification(Context context, String ids) {
+        Intent intent = new Intent(context, DetectedActivitiesIntentService.class);
+        intent.setAction(ACTION_TEST);
+        intent.putExtra(EXTRA_IDS, ids);
+        context.startService(intent);
+    }
+
+    /**
+     * Handles incoming intents.
+     *
+     * @param intent The Intent is provided (inside a PendingIntent) when requestActivityUpdates()
+     *               is called.
+     */
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        if (intent != null) {
+            final String action = intent.getAction();
+            if (action != null && ACTION_TEST.equals(action)) {
+                String ids = intent.getStringExtra(EXTRA_IDS);
+                NotificationUtils.notify(this, walkQuip.blurt(), ids, R.color.colorPrimaryDark);
+            } else {
+                ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
+                Intent localIntent = new Intent(LocationConstants.BROADCAST_ACTIVITIES);
+                mGeoFenceId = intent.getStringExtra(ActivityDetectService.EXTRA_GEOFENCE_ID);
+
+                // Get the list of the probable activities associated with the current state of the
+                // device. Each activity is associated with a confidence level, which is an int between
+                // 0 and 100.
+                ArrayList<DetectedActivity> detectedActivities = (ArrayList) result.getProbableActivities();
+                DetectedActivity mostProbable = result.getMostProbableActivity();
+
+                // Log each activity.
+                Log.i(TAG, "activities detected");
+                // Broadcast the list of detected activities.
+                localIntent.putExtra(LocationConstants.ACTIVITY_ALL, detectedActivities);
+                localIntent.putExtra(LocationConstants.ACTIVITY_MOST_PROBABLE, mostProbable);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
+
+                String strStatus = "";
+                for (DetectedActivity thisActivity : detectedActivities) {
+                    strStatus += getActivityString(thisActivity.getType()) + thisActivity.getConfidence() + "%\n";
+                    Log.d(TAG, "onHandleIntent: " + strStatus);
+                }
+                Log.d(TAG, "onReceive: mostProbableActivity" + getActivityString(mostProbable.getType()));
+
+                if (mostProbable.getType() == DetectedActivity.ON_FOOT) {
+//                  We transitioned to ON_FOOT give a notification.
+//                  GeofenceUpdateIntentService.removeGeofence(this, mGeoFenceId);
+                    NotificationUtils.notify(this, walkQuip.blurt(), mGeoFenceId, R.color.colorPrimaryDark);
+                   ActivityDetectService.stopDetecting(this);
+                }
+            }
+        }
+    }
+    /**
+     * Returns a human readable String corresponding to a detected activity type.
+     */
+    public String getActivityString(int detectedActivityType) {
+        Resources resources = this.getResources();
+        switch (detectedActivityType) {
+            case DetectedActivity.IN_VEHICLE:
+                return resources.getString(R.string.in_vehicle);
+            case DetectedActivity.ON_BICYCLE:
+                return resources.getString(R.string.on_bicycle);
+            case DetectedActivity.ON_FOOT:
+                return resources.getString(R.string.on_foot);
+            case DetectedActivity.RUNNING:
+                return resources.getString(R.string.running);
+            case DetectedActivity.STILL:
+                return resources.getString(R.string.still);
+            case DetectedActivity.TILTING:
+                return resources.getString(R.string.tilting);
+            case DetectedActivity.UNKNOWN:
+                return resources.getString(R.string.unknown);
+            case DetectedActivity.WALKING:
+                return resources.getString(R.string.walking);
+            default:
+                return resources.getString(R.string.unidentifiable_activity, detectedActivityType);
+        }
+    }
+}

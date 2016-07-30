@@ -10,6 +10,7 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -60,6 +61,11 @@ dependencies {
     compile "com.google.firebase:firebase-crash:$rootProject.firebaseVersion"
     compile "com.google.firebase:firebase-messaging:$rootProject.firebaseVersion"
     compile project(path: ':quip')
+
+    // Location
+    compile "com.google.android.gms:play-services-location:$rootProject.ext.playServicesVersion"
+    compile "com.google.android.gms:play-services-gcm:$rootProject.ext.playServicesVersion"
+
 }
 
 apply plugin: 'com.google.gms.google-services'

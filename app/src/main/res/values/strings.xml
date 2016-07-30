@@ -1,5 +1,35 @@
 <resources>
     <string name="action_settings">Settings</string>
+    <string name="geofence_not_available">Geofence not available.</string>
+    <string name="geofence_too_many_geofences">Too many Geofences.</string>
+    <string name="geofence_too_many_pending_intents">Too many pending intents.</string>
+    <string name="unknown_geofence_error">Unknown geofence error.</string>
+    <string name="not_connected">Not connected</string>
+    <string name="in_vehicle">in vehicle</string>
+    <string name="on_bicycle">on bicycle</string>
+    <string name="on_foot">on foot</string>
+    <string name="running">running</string>
+    <string name="still">still</string>
+    <string name="tilting">tilting</string>
+    <string name="unknown">unknown</string>
+    <string name="walking">walking</string>
+    <string name="unidentifiable_activity">unidentifiable activity: %1$d</string>
+    <string name="geofence_transition_entered">Entered</string>
+    <string name="geofence_transition_exited">Exited</string>
+    <string name="unknown_geofence_transition">unknown transition</string>
+    <string name="geofence_transition_invalid_type">geofence transition invalid type: %1$d</string>
+    <string name="add_geofences">Refresh</string>
+    <string name="remove_geofences">Clear</string>
+    <string name="title">Title</string>
+    <string name="radius_in_m">Radius in m</string>
+    <string name="latitude_decimal">latitude in decimal</string>
+    <string name="longitude_decimal">longitude in decimal</string>
+    <string name="current_location">current location</string>
+    <string name="OK">ok</string>
+    <string name="error_api_build">error accessing google api</string>
+    <string name="geofences_updated">Geofences updated</string>
+    <string name="permission_rationale">This app is testing geofences and needs location permission to do this.</string>
+    <string name="nothing_to_remove">Nothing to remove</string>
 
     <string-array name="string_array_enter">
         <item>enter one</item>
