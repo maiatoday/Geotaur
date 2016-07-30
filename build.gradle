@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.0-alpha6'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,4 +21,22 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+// Define versions in a single place
+ext {
+    // App dependencies
+    supportLibraryVersion = '24.1.1'
+    playServicesVersion = '9.2.1'
+    commons_ioVersion = '2.4'
+    junitVersion = '4.12'
+    mockitoVersion = '1.10.19'
+    hamcrestVersion = '1.3'
+    supportTestVersion = '0.5'
+    espressoVersion = '2.2.2'
+    uiautomatorVersion = '2.1.2'
+    daggerVersion = '2.2'
+    javaxAnnotationsVersion = '1.0'
+    firebaseVersion = '9.2.1'
+    constraintLayoutVersion = '1.0.0-alpha4'
 }
