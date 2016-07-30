@@ -45,7 +45,6 @@ dependencies {
     apt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
     provided "javax.annotation:jsr250-api:$rootProject.javaxAnnotationsVersion"
 
-
     // Support libs
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support.constraint:constraint-layout:$rootProject.constraintLayoutVersion"
@@ -59,8 +58,7 @@ dependencies {
     // Firebase
     compile "com.google.firebase:firebase-core:$rootProject.firebaseVersion"
     compile "com.google.firebase:firebase-crash:$rootProject.firebaseVersion"
-
-
+    compile "com.google.firebase:firebase-messaging:$rootProject.firebaseVersion"
 }
 
 apply plugin: 'com.google.gms.google-services'
