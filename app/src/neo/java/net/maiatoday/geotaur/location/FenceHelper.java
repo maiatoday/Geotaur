@@ -8,22 +8,29 @@ import android.util.Log;
 import com.google.android.gms.awareness.Awareness;
 import com.google.android.gms.awareness.fence.AwarenessFence;
 import com.google.android.gms.awareness.fence.DetectedActivityFence;
+import com.google.android.gms.awareness.fence.FenceQueryRequest;
+import com.google.android.gms.awareness.fence.FenceQueryResult;
+import com.google.android.gms.awareness.fence.FenceState;
+import com.google.android.gms.awareness.fence.FenceStateMap;
 import com.google.android.gms.awareness.fence.FenceUpdateRequest;
 import com.google.android.gms.awareness.fence.LocationFence;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.ResultCallbacks;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.Geofence;
 
 import net.maiatoday.geotaur.R;
 import net.maiatoday.geotaur.utils.NotificationUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static android.provider.Settings.System.DATE_FORMAT;
 
 /**
  * Created by maia on 2016/07/30.
@@ -92,6 +99,37 @@ public class FenceHelper implements FenceAccess {
     }
 
     @Override
+    public void queryGeofence(Context context, final String fenceKey) {
+
+        final String keyEnter = ENTER_PREFIX + fenceKey;
+        final String keyExit = EXIT_PREFIX + fenceKey;
+        final String keyWalk = WALK_PREFIX + fenceKey;
+        final String keyDwell = DWELL_PREFIX + fenceKey;
+        Awareness.FenceApi.queryFences(apiClient,
+                FenceQueryRequest.forFences(Arrays.asList(keyEnter, keyExit, keyDwell, keyWalk)))
+                .setResultCallback(new ResultCallback<FenceQueryResult>() {
+                    @Override
+                    public void onResult(@NonNull FenceQueryResult fenceQueryResult) {
+                        if (!fenceQueryResult.getStatus().isSuccess()) {
+                            Log.e(TAG, "Could not query fence: " + fenceKey);
+                            return;
+                        }
+                        FenceStateMap map = fenceQueryResult.getFenceStateMap();
+                        for (String fenceKey : map.getFenceKeys()) {
+                            FenceState fenceState = map.getFenceState(fenceKey);
+                            Log.i(TAG, "Fence " + fenceKey + ": "
+                                    + fenceState.getCurrentState()
+                                    + ", was="
+                                    + fenceState.getPreviousState()
+                                    + ", lastUpdateTime="
+                                    + new SimpleDateFormat("yyyy-MM-dd-hh:mm:ss").format(
+                                    new Date(fenceState.getLastFenceUpdateTimeMillis())));
+                        }
+                    }
+                });
+    }
+
+    @Override
     public void testNotification(Context context, String message) {
         NotificationUtils.notify(context, "TODO", message, R.color.colorTest);
     }
@@ -104,18 +142,18 @@ public class FenceHelper implements FenceAccess {
             AwarenessFence walkingFence = AwarenessFence.and(LocationFence.in(lat, lon, radius, DWELL_MILLIS),
                     DetectedActivityFence.during(DetectedActivityFence.ON_FOOT));
 
-            final String keyEnter = ENTER_PREFIX+key;
-            final String keyExit  = EXIT_PREFIX+key;
-            final String keyWalk  = WALK_PREFIX+key;
-            final String keyDwell = DWELL_PREFIX+key;
-            PendingIntent pendingIntentGeo  =  GeofenceTriggerReceiver.getTriggerPendingIntent(context);
-            PendingIntent pendingIntentWalk  =  ActivityTriggerReceiver.getTriggerPendingIntent(context);
+            final String keyEnter = ENTER_PREFIX + key;
+            final String keyExit  = EXIT_PREFIX + key;
+            final String keyWalk  = WALK_PREFIX + key;
+            final String keyDwell = DWELL_PREFIX + key;
+            PendingIntent pendingIntentGeo = GeofenceTriggerReceiver.getTriggerPendingIntent(context);
+            PendingIntent pendingIntentWalk = ActivityTriggerReceiver.getTriggerPendingIntent(context);
             Awareness.FenceApi.updateFences(
                     apiClient,
                     new FenceUpdateRequest.Builder()
                             .addFence(keyEnter, geoFenceEnter, pendingIntentGeo)
                             .addFence(keyExit, geoFenceExit, pendingIntentGeo)
-                            .addFence(keyExit, geoFenceDwell, pendingIntentGeo)
+                            .addFence(keyDwell, geoFenceDwell, pendingIntentGeo)
                             .addFence(keyWalk, walkingFence, pendingIntentWalk)
                             .build())
                     .setResultCallback(new ResultCallback<Status>() {
@@ -136,15 +174,17 @@ public class FenceHelper implements FenceAccess {
 
     private void removeOneGeofence(final String key) {
         try {
-            final String keyEnter = ENTER_PREFIX+key;
-            final String keyExit  = EXIT_PREFIX+key;
-            final String keyWalk  = WALK_PREFIX+key;
+            final String keyEnter = ENTER_PREFIX + key;
+            final String keyExit = EXIT_PREFIX + key;
+            final String keyWalk = WALK_PREFIX + key;
+            final String keyDwell = DWELL_PREFIX + key;
             Awareness.FenceApi.updateFences(
                     apiClient,
                     new FenceUpdateRequest.Builder()
                             .removeFence(keyEnter)
                             .removeFence(keyExit)
                             .removeFence(keyWalk)
+                            .removeFence(keyDwell)
                             .build()).setResultCallback(new ResultCallbacks<Status>() {
                 @Override
                 public void onSuccess(@NonNull Status status) {

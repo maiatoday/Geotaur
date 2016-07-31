@@ -1,6 +1,7 @@
 package net.maiatoday.geotaur.location;
 
 import android.content.Context;
+import android.util.Log;
 
 /**
  * A wrapper class around geofence access.
@@ -8,6 +9,7 @@ import android.content.Context;
  */
 
 public class FenceHelper implements FenceAccess {
+    private static final String TAG = "FenceHelper";
     public FenceHelper(SimpleGeofenceStore store, Context context) {
     }
 
@@ -24,6 +26,11 @@ public class FenceHelper implements FenceAccess {
     @Override
     public void removeGeofence(Context context, String ids) {
         GeofenceUpdateIntentService.removeGeofence(context, ids);
+    }
+
+    @Override
+    public void queryGeofence(Context context, String id) {
+        Log.d(TAG, "queryGeofence: Hrmph not possible");
     }
 
     @Override

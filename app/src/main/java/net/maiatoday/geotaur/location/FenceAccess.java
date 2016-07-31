@@ -13,6 +13,7 @@ public interface FenceAccess {
     void addGeofence(Context context, String ids);
     void addAllGeofences(Context context);
     void removeGeofence(Context context, String ids);
+    void queryGeofence(Context context, String id);
 
     void testNotification(Context context, String message);
 }

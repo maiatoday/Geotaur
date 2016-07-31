@@ -45,6 +45,20 @@
                 app:layout_constraintRight_toRightOf="@+id/constrainLayout"
                 android:layout_marginRight="16dp"
                 android:layout_marginEnd="16dp" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_help_outline_black"
+                android:tint="@color/colorAccent"
+
+                android:onClick="@{()->handler.onItemInfo(data)}"
+                app:layout_constraintLeft_toRightOf="@+id/title"
+                app:layout_constraintTop_toTopOf="@+id/constrainLayout"
+                app:layout_constraintRight_toRightOf="@+id/constrainLayout"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintHorizontal_bias="1.0"  />
 
             <!--android:text="@{data.getLatitudeText()}"-->
             <TextView

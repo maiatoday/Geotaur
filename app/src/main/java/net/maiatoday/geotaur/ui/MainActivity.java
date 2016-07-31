@@ -297,6 +297,11 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     }
 
     @Override
+    public void onItemInfo(SimpleGeofence item) {
+        fenceAccess.queryGeofence(this, item.getId());
+    }
+
+    @Override
     public void onItemRemoved(String id) {
         mGeofenceStorage.clearGeofence(id);
         fenceAccess.removeGeofence(this, id);
