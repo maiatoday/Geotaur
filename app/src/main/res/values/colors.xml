@@ -2,6 +2,7 @@
 <resources>
 
     <color name="colorEnter">#b10740</color>
+    <color name="colorDwell">#f412e9</color>
     <color name="colorExit">#545c63</color>
     <color name="colorWalk">#1c68f4</color>
     <color name="colorTest">#f4841c</color>

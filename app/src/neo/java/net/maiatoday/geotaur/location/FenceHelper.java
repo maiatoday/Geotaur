@@ -34,6 +34,7 @@ public class FenceHelper implements FenceAccess {
     public static final String ENTER_PREFIX = "enter_";
     public static final String EXIT_PREFIX = "exit_";
     public static final String WALK_PREFIX = "walk_";
+    public static final String DWELL_PREFIX = "dwell_";
     private static final long DWELL_MILLIS = 3000;
     private GoogleApiClient apiClient;
     private final SimpleGeofenceStore geofenceStore;
@@ -99,12 +100,14 @@ public class FenceHelper implements FenceAccess {
         try {
             AwarenessFence geoFenceEnter = LocationFence.entering(lat, lon, radius);
             AwarenessFence geoFenceExit = LocationFence.exiting(lat, lon, radius);
+            AwarenessFence geoFenceDwell = LocationFence.in(lat, lon, radius, DWELL_MILLIS);
             AwarenessFence walkingFence = AwarenessFence.and(LocationFence.in(lat, lon, radius, DWELL_MILLIS),
                     DetectedActivityFence.during(DetectedActivityFence.ON_FOOT));
 
             final String keyEnter = ENTER_PREFIX+key;
             final String keyExit  = EXIT_PREFIX+key;
             final String keyWalk  = WALK_PREFIX+key;
+            final String keyDwell = DWELL_PREFIX+key;
             PendingIntent pendingIntentGeo  =  GeofenceTriggerReceiver.getTriggerPendingIntent(context);
             PendingIntent pendingIntentWalk  =  ActivityTriggerReceiver.getTriggerPendingIntent(context);
             Awareness.FenceApi.updateFences(
@@ -112,6 +115,7 @@ public class FenceHelper implements FenceAccess {
                     new FenceUpdateRequest.Builder()
                             .addFence(keyEnter, geoFenceEnter, pendingIntentGeo)
                             .addFence(keyExit, geoFenceExit, pendingIntentGeo)
+                            .addFence(keyExit, geoFenceDwell, pendingIntentGeo)
                             .addFence(keyWalk, walkingFence, pendingIntentWalk)
                             .build())
                     .setResultCallback(new ResultCallback<Status>() {
