@@ -45,50 +45,54 @@ public class GeofenceTriggerReceiver extends BroadcastReceiver {
         if (key.startsWith(FenceHelper.ENTER_PREFIX)) {
             switch (state) {
                 case FenceState.TRUE:
-                    Log.i(TAG, "Fence >  enter geofence");
+                    Log.i(TAG, key+" TRUE");
                     NotificationUtils.notify(context,
                             enterQuip.blurt(),
                             key,
                             R.color.colorEnter);
                     break;
                 case FenceState.FALSE:
-                    Log.i(TAG, "Fence > no longer enter geofence");
+                    Log.i(TAG, key+" FALSE");
                     break;
                 case FenceState.UNKNOWN:
-                    Log.i(TAG, "Fence > enter geofence unknown");
+                    Log.i(TAG, key+" UNKNOWN");
                     break;
             }
         } else if (key.startsWith(FenceHelper.EXIT_PREFIX)) {
             switch (state) {
                 case FenceState.TRUE:
-                    Log.i(TAG, "Fence >  exit geofence");
+                    Log.i(TAG, key+" TRUE");
                     NotificationUtils.notify(context,
                             exitQuip.blurt(),
                             key,
                             R.color.colorExit);
                     break;
                 case FenceState.FALSE:
-                    Log.i(TAG, "Fence > no longer exit geofence");
+                    Log.i(TAG, key+" FALSE");
                     break;
                 case FenceState.UNKNOWN:
-                    Log.i(TAG, "Fence > exit geofence unknown");
+                    Log.i(TAG, key+" UNKNOWN");
                     break;
             }
 
         } else if (key.startsWith(FenceHelper.DWELL_PREFIX)) {
             switch (state) {
                 case FenceState.TRUE:
-                    Log.i(TAG, "Fence >  dwell geofence");
+                    Log.i(TAG, key+" TRUE");
                     NotificationUtils.notify(context,
                             enterQuip.blurt(),
                             key,
                             R.color.colorDwell);
                     break;
                 case FenceState.FALSE:
-                    Log.i(TAG, "Fence > no longer dwell geofence");
+                    Log.i(TAG, key+" FALSE");
+                    NotificationUtils.notify(context,
+                            exitQuip.blurt(),
+                            key,
+                            R.color.colorExitDwell);
                     break;
                 case FenceState.UNKNOWN:
-                    Log.i(TAG, "Fence > dwell geofence unknown");
+                    Log.i(TAG, key+" UNKNOWN");
                     break;
             }
 

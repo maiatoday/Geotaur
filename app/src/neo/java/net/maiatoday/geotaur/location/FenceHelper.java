@@ -35,7 +35,7 @@ public class FenceHelper implements FenceAccess {
     public static final String EXIT_PREFIX = "exit_";
     public static final String WALK_PREFIX = "walk_";
     public static final String DWELL_PREFIX = "dwell_";
-    private static final long DWELL_MILLIS = 3000;
+    private static final long DWELL_MILLIS = 1000;
     private GoogleApiClient apiClient;
     private final SimpleGeofenceStore geofenceStore;
 
