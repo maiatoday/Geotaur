@@ -8,6 +8,9 @@ import android.content.Context;
  */
 
 public class FenceHelper implements FenceAccess {
+    public FenceHelper(SimpleGeofenceStore store, Context context) {
+    }
+
     @Override
     public void addGeofence(Context context, String ids) {
         GeofenceUpdateIntentService.addGeofences(context, ids);
