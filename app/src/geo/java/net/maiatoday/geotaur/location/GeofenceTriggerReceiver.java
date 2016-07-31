@@ -69,9 +69,10 @@ public class GeofenceTriggerReceiver extends BroadcastReceiver {
                     triggeringGeofences
             );
 
-            String title = geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ? enterQuip.blurt() : exitQuip.blurt();
+            boolean enter = geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER;
+            String title =  enter?enterQuip.blurt() : exitQuip.blurt();
             // Send notification and log the transition details.
-            NotificationUtils.notify(context, title, geofenceTransitionDetails, R.color.colorAccent);
+            NotificationUtils.notify(context, title, geofenceTransitionDetails, enter?R.color.colorEnter:R.color.colorExit);
             if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
                 ActivityDetectUpdateService.stopDetecting(context);
             } else {

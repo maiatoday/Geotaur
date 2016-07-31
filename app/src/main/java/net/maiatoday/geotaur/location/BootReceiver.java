@@ -12,7 +12,7 @@ import javax.inject.Inject;
 public class BootReceiver extends BroadcastReceiver {
     private static final String TAG = "BootReceiver";
     @Inject
-    LocationAccess locationProvider;
+    FenceAccess locationProvider;
 
     public BootReceiver() {
     }

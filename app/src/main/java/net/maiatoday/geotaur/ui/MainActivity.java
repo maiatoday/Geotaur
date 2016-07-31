@@ -35,6 +35,7 @@ import net.maiatoday.geotaur.R;
 import net.maiatoday.geotaur.TaurApplication;
 import net.maiatoday.geotaur.databinding.ActivityMainBinding;
 import net.maiatoday.geotaur.helpers.PreferenceHelper;
+import net.maiatoday.geotaur.location.FenceAccess;
 import net.maiatoday.geotaur.location.LocationAccess;
 import net.maiatoday.geotaur.location.LocationConstants;
 import net.maiatoday.geotaur.location.SimpleGeofence;
@@ -51,7 +52,7 @@ import javax.inject.Named;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MainActivity extends AppCompatActivity implements AddGeoDialogFragment.OnAddGeofenceListener,
-                GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, OnGeofenceItemAction {
+                OnGeofenceItemAction, LocationAccess.OnNewLocation {
     private static final String TAG = "MainActivity";
     private static final int REQUEST_LOCATION_FINE = 9000;
     @Inject
@@ -73,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     Quip walkQuip;
 
     @Inject
+    FenceAccess fenceAccess;
+
+    @Inject
     LocationAccess locationAccess;
 
     private boolean firstTime;
@@ -88,11 +92,6 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     private GeofenceListAdapter mAdapter;
     private Location mLastLocation;
     private String mLastAction;
-
-    /**
-     * Used when requesting to add or remove geofences.
-     */
-    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,9 +130,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(mLandmarkRV);
 
-        // Kick off the request to build GoogleApiClient.  Used to get location only.
-
-        buildGoogleApiClient();
+        locationAccess.initialise(this);
 
         FloatingActionButton fab = binding.fab;
         fab.setOnClickListener(new View.OnClickListener() {
@@ -167,35 +164,16 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
         return super.onOptionsItemSelected(item);
     }
 
-/**
-      * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the LocationServices API.
-      */
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        if (mGoogleApiClient == null) {
-            Toast.makeText(this, R.string.error_api_build, Toast.LENGTH_LONG).show();
-            this.finish();
-        }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        locationAccess.stopUpdates(this);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
+    protected void onResume() {
+        super.onResume();
+        locationAccess.startUpdates(this, this);
     }
 
     private void showAddGeoDialog() {
@@ -206,43 +184,8 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
         dialogFragment.show(fm, AddGeoDialogFragment.getFragmentTag());
     }
 
-    /**
-     * Runs when a GoogleApiClient object successfully connects.
-     */
-    @Override
-    public void onConnected(Bundle connectionHint) {
-
-        Log.i(TAG, "Connected to GoogleApiClient");
-        try {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-            if (mLastLocation != null) {
-                Log.i(TAG, "Last Location Lat:" + mLastLocation.getLatitude() + " Long:" + mLastLocation.getLongitude());
-            }
-        } catch (SecurityException securityException) {
-            // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
-            logSecurityException(securityException);
-        }
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
-        // onConnectionFailed.
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
-    }
-
-    @Override
-    public void onConnectionSuspended(int cause) {
-        // The connection to Google Play services was lost for some reason.
-        Log.i(TAG, "Connection suspended");
-
-        // onConnected() will be called again automatically when the service reconnects
-    }
-
     public void testNotificationButtonHandler(View view) {
-        locationAccess.testNotification(this, "HelloWorld");
+        fenceAccess.testNotification(this, "HelloWorld");
     }
 
     /**
@@ -250,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
      * specified geofences. Handles the success or failure results returned by addGeofences().
      */
     public void addGeofencesButtonHandler(View view) {
-        locationAccess.addAllGeofences(this);
+        fenceAccess.addAllGeofences(this);
     }
 
 
@@ -259,13 +202,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
      * previously registered geofences.
      */
     public void removeGeofencesButtonHandler(View view) {
-        locationAccess.removeGeofence(this, mGeofenceStorage.getGeofenceIdsAsString());
-    }
-
-
-    private void logSecurityException(SecurityException securityException) {
-        Log.e(TAG, "Invalid location permission. " +
-                "You need to use ACCESS_FINE_LOCATION with geofences", securityException);
+        fenceAccess.removeGeofence(this, mGeofenceStorage.getGeofenceIdsAsString());
     }
 
     private void setButtonsEnabledState() {
@@ -326,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
         mAdapter.notifyItemInserted(mSimpleGeofenceList.size() - 1);
         mGeofenceStorage.setGeofence(title, simpleGeofence);
         mLastAction = "Add " + title + "\n";
-        locationAccess.addGeofence(this, title);
+        fenceAccess.addGeofence(this, title);
     }
 
     @Override
@@ -340,8 +277,12 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     @Override
     public void onItemRemoved(String id) {
         mGeofenceStorage.clearGeofence(id);
-        locationAccess.removeGeofence(this, id);
+        fenceAccess.removeGeofence(this, id);
     }
 
 
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+    }
 }

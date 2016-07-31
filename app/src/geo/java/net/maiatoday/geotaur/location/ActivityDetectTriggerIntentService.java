@@ -72,7 +72,7 @@ public class ActivityDetectTriggerIntentService extends IntentService {
             final String action = intent.getAction();
             if (action != null && ACTION_TEST.equals(action)) {
                 String ids = intent.getStringExtra(EXTRA_IDS);
-                NotificationUtils.notify(this, walkQuip.blurt(), ids, R.color.colorPrimaryDark);
+                NotificationUtils.notify(this, walkQuip.blurt(), ids, R.color.colorTest);
             } else {
                 ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
                 Intent localIntent = new Intent(LocationConstants.BROADCAST_ACTIVITIES);
@@ -101,7 +101,7 @@ public class ActivityDetectTriggerIntentService extends IntentService {
                 if (mostProbable.getType() == DetectedActivity.ON_FOOT) {
 //                  We transitioned to ON_FOOT give a notification.
 //                  GeofenceUpdateIntentService.removeGeofence(this, mGeoFenceId);
-                    NotificationUtils.notify(this, walkQuip.blurt(), mGeoFenceId, R.color.colorPrimaryDark);
+                    NotificationUtils.notify(this, walkQuip.blurt(), mGeoFenceId, R.color.colorWalk);
                    ActivityDetectUpdateService.stopDetecting(this);
                 }
             }

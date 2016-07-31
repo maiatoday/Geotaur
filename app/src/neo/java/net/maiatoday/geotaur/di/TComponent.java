@@ -1,14 +1,10 @@
 package net.maiatoday.geotaur.di;
 
-import net.maiatoday.geotaur.location.BootReceiver;
-import net.maiatoday.geotaur.ui.MainActivity;
-
 /**
+ * DI Injection interface
  * Created by maia on 2016/07/30.
  */
 
-public interface TComponent {
-    void inject(MainActivity target);
-    void inject(BootReceiver target);
+public interface TComponent extends BaseComponent {
 
 }

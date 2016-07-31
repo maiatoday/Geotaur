@@ -10,8 +10,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import net.maiatoday.geotaur.R;
 import net.maiatoday.geotaur.helpers.PreferenceHelper;
-import net.maiatoday.geotaur.location.LocationAccess;
-import net.maiatoday.geotaur.location.LocationWrapper;
 import net.maiatoday.quip.Quip;
 
 import javax.inject.Named;
@@ -73,10 +71,5 @@ public class ApplicationModule {
         Resources res = context.getResources();
         String[] quips = res.getStringArray(R.array.string_array_walk);
         return new Quip(quips);
-    }
-
-    @Provides
-    LocationAccess provideLocationAccess() {
-        return new LocationWrapper();
     }
 }

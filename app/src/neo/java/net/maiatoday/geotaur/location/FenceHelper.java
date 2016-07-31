@@ -10,8 +10,8 @@ import net.maiatoday.geotaur.utils.NotificationUtils;
  * Created by maia on 2016/07/30.
  */
 
-public class LocationWrapper implements LocationAccess {
-    private static final String TAG = "LocationWrapper";
+public class FenceHelper implements FenceAccess {
+    private static final String TAG = "FenceHelper";
     @Override
     public void addGeofence(Context context, String ids) {
         Log.d(TAG, "addGeofence() called with: ids = [" + ids + "]");
@@ -31,6 +31,6 @@ public class LocationWrapper implements LocationAccess {
 
     @Override
     public void testNotification(Context context, String message) {
-        NotificationUtils.notify(context, "TODO", message, R.color.colorPrimary);
+        NotificationUtils.notify(context, "TODO", message, R.color.colorTest);
     }
 }

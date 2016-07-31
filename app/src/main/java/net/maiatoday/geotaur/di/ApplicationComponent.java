@@ -10,6 +10,6 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules = {ApplicationModule.class})
+@Component(modules = {ApplicationModule.class, LocationModule.class})
 public interface ApplicationComponent extends TComponent {
 }

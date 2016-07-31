@@ -2,15 +2,12 @@ package net.maiatoday.geotaur.location;
 
 import android.content.Context;
 
-import net.maiatoday.geotaur.location.ActivityDetectTriggerIntentService;
-import net.maiatoday.geotaur.location.GeofenceUpdateIntentService;
-import net.maiatoday.geotaur.location.LocationAccess;
-
 /**
+ * A wrapper class around geofence access.
  * Created by maia on 2016/07/30.
  */
 
-public class LocationWrapper implements LocationAccess {
+public class FenceHelper implements FenceAccess {
     @Override
     public void addGeofence(Context context, String ids) {
         GeofenceUpdateIntentService.addGeofences(context, ids);
