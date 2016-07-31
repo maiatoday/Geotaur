@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="string_array_exit">
+        <item>open archway ... leading nowhere</item>
+        <item>what was that...</item>
+        <item>no ... wait it\'s gone</item>
+        <item>silence...</item>
+        <item>...silence</item>
+        <item>only a lemony breeze...</item>
+        <item>...the cool brush of emptiness</item>
+        <item>nothing...</item>
+        <item>...nothing</item>
+        <item>blank...</item>
+        <item>...blank</item>
+        <item>...space</item>
+        <item>space...</item>
+        <item>the path...deserted</item>
+        <item>vacant ... stairway</item>
+        <item>mute entrance...</item>
+    </string-array>
+
+</resources>

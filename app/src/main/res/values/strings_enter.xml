@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="string_array_enter">
+        <item>a whiff of sweat on the wind</item>
+        <item>a globule of spittle in the dust</item>
+        <item>a dark shadow flits at the edge of your vision</item>
+        <item>a long hair snagged on a corner</item>
+        <item>a cloven hoof print</item>
+        <item>a droplet of blood on the path</item>
+        <item>an enormous hand print</item>
+        <item>a shimmering mirage of nothing</item>
+        <item>a tremor underfoot</item>
+        <item>a faint galloping rumble in the distance</item>
+        <item>a snort, a snicker</item>
+        <item>a frayed red thread</item>
+    </string-array>
+
+</resources>

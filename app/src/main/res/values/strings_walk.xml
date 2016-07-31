@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="string_array_walk">
+        <item>my footfalls, heavy</item>
+        <item>my breath rushes</item>
+        <item>heartbeats in my ears</item>
+        <item>salty sweat stings my eyes</item>
+        <item>now, watch out! ssshsh</item>
+        <item>slow step, stumble, steps</item>
+        <item>sticky palms, hot arms</item>
+        <item>my hair whips as you turn my head</item>
+        <item>pulse at my neck</item>
+        <item>shoulders tense</item>
+        <item>calf cramps</item>
+        <item>stone in my instep</item>
+    </string-array></resources>
