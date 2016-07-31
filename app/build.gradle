@@ -65,6 +65,7 @@ dependencies {
     // Location
     compile "com.google.android.gms:play-services-location:$rootProject.ext.playServicesVersion"
     compile "com.google.android.gms:play-services-gcm:$rootProject.ext.playServicesVersion"
+    neoCompile "com.google.android.gms:play-services-contextmanager:$rootProject.ext.playServicesVersion"
 
 }
 
