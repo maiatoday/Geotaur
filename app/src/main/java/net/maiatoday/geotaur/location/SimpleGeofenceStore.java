@@ -42,11 +42,8 @@ public class SimpleGeofenceStore {
     private final SharedPreferences mPrefs;
 
     // Create the SharedPreferences storage with private access only
-    public SimpleGeofenceStore(Context context) {
-        mPrefs =
-                context.getSharedPreferences(
-                        PreferenceHelper.SHARED_PREF_NAME,
-                        Context.MODE_PRIVATE);
+    public SimpleGeofenceStore(SharedPreferences preferences) {
+        mPrefs = preferences;
     }
     /**
      * Returns a stored geofence by its id, or returns null

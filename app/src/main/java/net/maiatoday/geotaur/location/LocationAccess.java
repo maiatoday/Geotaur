@@ -10,6 +10,7 @@ import android.location.Location;
 public interface LocationAccess {
     void initialise(Context context);
     void startUpdates(Context context, OnNewLocation listener);
+    void snapShot(Context context, OnNewLocation listener);
     void stopUpdates(Context context);
 
     interface OnNewLocation {

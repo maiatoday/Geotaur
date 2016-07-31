@@ -14,8 +14,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.lang.ref.WeakReference;
-import java.text.DateFormat;
-import java.util.Date;
 
 /**
  * A wrapper class around location access
@@ -52,6 +50,12 @@ public class LocationHelper implements LocationAccess,
                         "You need to use ACCESS_FINE_LOCATION with geofences", securityException);
             }
         }
+    }
+
+    @Override
+    public void snapShot(Context context, OnNewLocation listener) {
+        this.listener = listener;
+        if (listener != null) listener.onLocationChanged(lastLocation);
     }
 
     @Override

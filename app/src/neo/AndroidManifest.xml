@@ -12,10 +12,10 @@
 
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
-            android:value="AIzaSyDBjM0yVslp8j8Ajy0S64WMIX5P_kIYmr4" />
+            android:value="AIzaSyA5Y54k2tpAqBP2QR5l_jYn9LNz9wklbQg" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDBjM0yVslp8j8Ajy0S64WMIX5P_kIYmr4" />
+            android:value="AIzaSyA5Y54k2tpAqBP2QR5l_jYn9LNz9wklbQg" />
 
     </application>
 

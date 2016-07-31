@@ -23,12 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.LocationServices;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import net.maiatoday.geotaur.R;
@@ -79,19 +75,21 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     @Inject
     LocationAccess locationAccess;
 
+    @Inject
+    SimpleGeofenceStore mGeofenceStorage;
+
     private boolean firstTime;
     private ActivityMainBinding binding;
     private Button mAddGeofencesButton;
     private Button mRemoveGeofencesButton;
     private View mMainView;
 
-    // Persistent storage for geofences
-    private SimpleGeofenceStore mGeofenceStorage;
     List<SimpleGeofence> mSimpleGeofenceList;
     private RecyclerView mLandmarkRV;
     private GeofenceListAdapter mAdapter;
     private Location mLastLocation;
     private String mLastAction;
+    private boolean showAddDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,9 +107,6 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
         mMainView = binding.geoMain;
         mAddGeofencesButton = binding.addGeofencesButton;
         mRemoveGeofencesButton = binding.removeGeofencesButton;
-
-        // Instantiate a new geofence storage area
-        mGeofenceStorage = new SimpleGeofenceStore(this);
 
         if (mayUseLocation()) {
             setButtonsEnabledState();
@@ -177,11 +172,8 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     }
 
     private void showAddGeoDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        double myLat = mLastLocation != null ? mLastLocation.getLatitude() : 0.0;
-        double myLong = mLastLocation != null ? mLastLocation.getLongitude() : 0.0;
-        AddGeoDialogFragment dialogFragment = AddGeoDialogFragment.newInstance(LocationConstants.GEOFENCE_MED_RADIUS_IN_METERS, myLat, myLong);
-        dialogFragment.show(fm, AddGeoDialogFragment.getFragmentTag());
+        showAddDialog = true;
+        locationAccess.snapShot(this, this);
     }
 
     public void testNotificationButtonHandler(View view) {
@@ -284,5 +276,13 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
+        if (showAddDialog) {
+            showAddDialog = false;
+            FragmentManager fm = getSupportFragmentManager();
+            double myLat = mLastLocation != null ? mLastLocation.getLatitude() : 0.0;
+            double myLong = mLastLocation != null ? mLastLocation.getLongitude() : 0.0;
+            AddGeoDialogFragment dialogFragment = AddGeoDialogFragment.newInstance(LocationConstants.GEOFENCE_MED_RADIUS_IN_METERS, myLat, myLong);
+            dialogFragment.show(fm, AddGeoDialogFragment.getFragmentTag());
+        }
     }
 }

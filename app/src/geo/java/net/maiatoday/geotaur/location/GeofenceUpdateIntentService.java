@@ -42,12 +42,14 @@ public class GeofenceUpdateIntentService extends IntentService implements Google
 
     @Inject
     SharedPreferences prefs;
+
+    @Inject
+    // Persistent storage for geofences
+    SimpleGeofenceStore mGeofenceStorage;
     /**
      * The list of geofences from a hardcoded list
      */
     protected ArrayList<Geofence> mGeofenceList;
-    // Persistent storage for geofences
-    private SimpleGeofenceStore mGeofenceStorage;
     List<SimpleGeofence> mSimpleGeofenceList;
 
     protected GoogleApiClient mGoogleApiClient;
@@ -130,8 +132,6 @@ public class GeofenceUpdateIntentService extends IntentService implements Google
         mIdsToRemove = null;
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<>();
-        // Instantiate a new geofence storage area
-        mGeofenceStorage = new SimpleGeofenceStore(this);
         mSimpleGeofenceList = mGeofenceStorage.getGeofencesAsList();
         populateGeofenceList(addIds);
         buildGoogleApiClient();
@@ -142,8 +142,6 @@ public class GeofenceUpdateIntentService extends IntentService implements Google
         mIdsToRemove = null;
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<>();
-        // Instantiate a new geofence storage area
-        mGeofenceStorage = new SimpleGeofenceStore(this);
         mSimpleGeofenceList = mGeofenceStorage.getGeofencesAsList();
         populateGeofenceList(mGeofenceStorage.getGeofenceIds());
         buildGoogleApiClient();
