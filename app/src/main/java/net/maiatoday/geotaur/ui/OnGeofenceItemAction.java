@@ -8,5 +8,6 @@ import net.maiatoday.geotaur.location.SimpleGeofence;
  */
 public interface OnGeofenceItemAction {
     void onItemClick(SimpleGeofence item);
+    void onItemEdit(SimpleGeofence item);
     void onItemRemoved(String id);
 }

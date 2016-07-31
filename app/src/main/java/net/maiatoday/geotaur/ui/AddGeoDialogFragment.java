@@ -29,6 +29,7 @@ public class AddGeoDialogFragment extends DialogFragment {
     private static final String ARG_RADIUS = "radius";
     private static final String ARG_LONGITUDE = "longitude";
     private static final String ARG_LATITUDE = "latitude";
+    private static final String ARG_ID = "id";
     private OnAddGeofenceListener mListener;
     private TextInputEditText mRadius;
     private TextInputEditText mLatitude;
@@ -37,6 +38,7 @@ public class AddGeoDialogFragment extends DialogFragment {
     private TextInputEditText mTitle;
     private double mLongitudeValue;
     private double mLatitudeValue;
+    private String mId;
 
     public AddGeoDialogFragment() {
         // Required empty public constructor
@@ -49,12 +51,13 @@ public class AddGeoDialogFragment extends DialogFragment {
      * @return A new instance of fragment AddGeoDialogFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddGeoDialogFragment newInstance(float radius, double latitude, double longitude) {
+    public static AddGeoDialogFragment newInstance(float radius, double latitude, double longitude, String id) {
         AddGeoDialogFragment fragment = new AddGeoDialogFragment();
         Bundle args = new Bundle();
         args.putFloat(ARG_RADIUS, radius);
         args.putDouble(ARG_LATITUDE, latitude);
         args.putDouble(ARG_LONGITUDE, longitude);
+        args.putString(ARG_ID, id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,6 +69,7 @@ public class AddGeoDialogFragment extends DialogFragment {
             mRadiusValue = getArguments().getFloat(ARG_RADIUS);
             mLatitudeValue = getArguments().getDouble(ARG_LATITUDE);
             mLongitudeValue = getArguments().getDouble(ARG_LONGITUDE);
+            mId = getArguments().getString(ARG_ID);
         }
     }
 
@@ -75,10 +79,15 @@ public class AddGeoDialogFragment extends DialogFragment {
         DialogAddGeoBinding binding = DataBindingUtil.inflate(inflater, R.layout.dialog_add_geo, container, false);
         View view = binding.getRoot();
         mTitle = binding.title;
+        mTitle.setText(mId);
         mRadius = binding.radius;
         mRadius.setText(Float.toString(mRadiusValue));
         mLatitude = binding.latitude;
         mLongitude = binding.longtitude;
+        if (!TextUtils.isEmpty(mId)) {
+            mLatitude.setText(Double.toString(mLatitudeValue));
+            mLongitude.setText(Double.toString(mLongitudeValue));
+        }
         Button okButton = binding.addGeoButton;
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override

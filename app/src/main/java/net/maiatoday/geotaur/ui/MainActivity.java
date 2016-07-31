@@ -245,7 +245,16 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     @Override
     public void onAddGeofence(String title, String radius, String latitude, String longtitude) {
         Log.d(TAG, "onAddGeofence: " + title + " " + radius + " " + latitude + ", " + longtitude);
-        SimpleGeofence simpleGeofence = new SimpleGeofence(title,
+        SimpleGeofence simpleGeofence = mGeofenceStorage.getGeofence(title);
+        if (simpleGeofence != null) {
+            int i = findItemIndexInList(title);
+            if (i != -1) {
+                mSimpleGeofenceList.remove(i);
+                mAdapter.notifyItemRemoved(i);
+                mGeofenceStorage.clearGeofence(title);
+            }
+        }
+        simpleGeofence = new SimpleGeofence(title,
                 Double.valueOf(latitude),
                 Double.valueOf(longtitude),
                 Float.valueOf(radius),
@@ -258,12 +267,33 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
         fenceAccess.addGeofence(this, title);
     }
 
+    private int findItemIndexInList(String title) {
+        int i = 0;
+        for (SimpleGeofence s:mSimpleGeofenceList) {
+            if (s.getId().equalsIgnoreCase(title)) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+
     @Override
     public void onItemClick(SimpleGeofence item) {
-        String uri = String.format(Locale.ENGLISH, "geo:%f,%f", item.getLatitude(), item.getLongitude());
+        String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f(%s)", item.getLatitude(), item.getLongitude(), item.getLatitude(), item.getLongitude(), item.getId());
         Log.d(TAG, "onClick: " + uri);
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         startActivity(intent);
+    }
+
+    @Override
+    public void onItemEdit(SimpleGeofence item) {
+        FragmentManager fm = getSupportFragmentManager();
+        double myLat = item.getLatitude();
+        double myLong = item.getLongitude();
+        AddGeoDialogFragment dialogFragment = AddGeoDialogFragment.newInstance(item.getRadius(), myLat, myLong, item.getId());
+        dialogFragment.show(fm, AddGeoDialogFragment.getFragmentTag());
+
     }
 
     @Override
@@ -281,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
             FragmentManager fm = getSupportFragmentManager();
             double myLat = mLastLocation != null ? mLastLocation.getLatitude() : 0.0;
             double myLong = mLastLocation != null ? mLastLocation.getLongitude() : 0.0;
-            AddGeoDialogFragment dialogFragment = AddGeoDialogFragment.newInstance(LocationConstants.GEOFENCE_MED_RADIUS_IN_METERS, myLat, myLong);
+            AddGeoDialogFragment dialogFragment = AddGeoDialogFragment.newInstance(LocationConstants.GEOFENCE_MED_RADIUS_IN_METERS, myLat, myLong, "");
             dialogFragment.show(fm, AddGeoDialogFragment.getFragmentTag());
         }
     }
