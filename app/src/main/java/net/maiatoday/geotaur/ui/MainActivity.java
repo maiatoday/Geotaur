@@ -1,7 +1,10 @@
 package net.maiatoday.geotaur.ui;
 
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
@@ -13,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.location.Geofence;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -48,7 +53,7 @@ import javax.inject.Named;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MainActivity extends AppCompatActivity implements AddGeoDialogFragment.OnAddGeofenceListener,
-                OnGeofenceItemAction, LocationAccess.OnNewLocation {
+        OnGeofenceItemAction, LocationAccess.OnNewLocation {
     private static final String TAG = "MainActivity";
     private static final int REQUEST_LOCATION_FINE = 9000;
     @Inject
@@ -90,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     private Location mLastLocation;
     private String mLastAction;
     private boolean showAddDialog;
+    private FenceInfoReceiver fenceInfoReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
         ItemTouchHelper.Callback callback = new GeofenceTouchHelper(mAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(mLandmarkRV);
+
+        fenceInfoReceiver = new FenceInfoReceiver();
 
         locationAccess.initialise(this);
 
@@ -163,13 +171,17 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     protected void onPause() {
         super.onPause();
         locationAccess.stopUpdates(this);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(fenceInfoReceiver);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         locationAccess.startUpdates(this, this);
+        LocalBroadcastManager.getInstance(this).registerReceiver(fenceInfoReceiver,
+                new IntentFilter(LocationConstants.BROADCAST_FENCE_INFO));
     }
+
 
     private void showAddGeoDialog() {
         showAddDialog = true;
@@ -269,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
 
     private int findItemIndexInList(String title) {
         int i = 0;
-        for (SimpleGeofence s:mSimpleGeofenceList) {
+        for (SimpleGeofence s : mSimpleGeofenceList) {
             if (s.getId().equalsIgnoreCase(title)) {
                 return i;
             }
@@ -303,8 +315,8 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
 
     @Override
     public void onItemRemoved(String id) {
-        mGeofenceStorage.clearGeofence(id);
         fenceAccess.removeGeofence(this, id);
+        mGeofenceStorage.clearGeofence(id);
     }
 
 
@@ -320,4 +332,21 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
             dialogFragment.show(fm, AddGeoDialogFragment.getFragmentTag());
         }
     }
+
+    public class FenceInfoReceiver extends BroadcastReceiver {
+        private static final String TAG = "FenceInfoReceiver";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.hasExtra(LocationConstants.INFO_MESSAGE)) {
+                String message = intent.getExtras().getString(LocationConstants.INFO_MESSAGE);
+                Snackbar.make(mMainView, message, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(android.R.string.ok, null).show();
+                if (message.length() > 24) {
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
 }

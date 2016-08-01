@@ -2,7 +2,9 @@ package net.maiatoday.geotaur.location;
 
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.awareness.Awareness;
@@ -93,13 +95,13 @@ public class FenceHelper implements FenceAccess {
         List<SimpleGeofence> simpleGeofenceList = geofenceStore.getGeofencesAsList();
         for (SimpleGeofence s : simpleGeofenceList) {
             if (addIds.contains(s.getId())) {
-                removeOneGeofence(s.getId());
+                removeOneGeofence(context, s.getId());
             }
         }
     }
 
     @Override
-    public void queryGeofence(Context context, final String fenceKey) {
+    public void queryGeofence(final Context context, final String fenceKey) {
 
         final String keyEnter = ENTER_PREFIX + fenceKey;
         final String keyExit = EXIT_PREFIX + fenceKey;
@@ -114,17 +116,23 @@ public class FenceHelper implements FenceAccess {
                             Log.e(TAG, "Could not query fence: " + fenceKey);
                             return;
                         }
+                        StringBuilder infoBuilder = new StringBuilder();
                         FenceStateMap map = fenceQueryResult.getFenceStateMap();
                         for (String fenceKey : map.getFenceKeys()) {
                             FenceState fenceState = map.getFenceState(fenceKey);
-                            Log.i(TAG, "Fence " + fenceKey + ": "
+                            String msg = "Fence " + fenceKey + ": "
                                     + fenceState.getCurrentState()
                                     + ", was="
                                     + fenceState.getPreviousState()
                                     + ", lastUpdateTime="
                                     + new SimpleDateFormat("yyyy-MM-dd-hh:mm:ss").format(
-                                    new Date(fenceState.getLastFenceUpdateTimeMillis())));
+                                    new Date(fenceState.getLastFenceUpdateTimeMillis()));
+                            Log.i(TAG, msg);
+                            infoBuilder.append(msg);
+                            infoBuilder.append("\n");
                         }
+
+                        notifyInfo(context, infoBuilder.toString());
                     }
                 });
     }
@@ -134,7 +142,7 @@ public class FenceHelper implements FenceAccess {
         NotificationUtils.notify(context, "TODO", message, R.color.colorTest);
     }
 
-    private void addOneGeofence(Context context, final String key, double lat, double lon, double radius) {
+    private void addOneGeofence(final Context context, final String key, double lat, double lon, double radius) {
         try {
             AwarenessFence geoFenceEnter = LocationFence.entering(lat, lon, radius);
             AwarenessFence geoFenceExit = LocationFence.exiting(lat, lon, radius);
@@ -161,8 +169,10 @@ public class FenceHelper implements FenceAccess {
                         public void onResult(@NonNull Status status) {
                             if (status.isSuccess()) {
                                 Log.i(TAG, "Fence " + key + " was successfully registered.");
+                                notifyInfo(context, "Fence " + key + " was successfully registered.");
                             } else {
                                 Log.e(TAG, "Fence " + key + " could not be registered: " + status);
+                                notifyInfo(context, "Fence " + key + " could not be registered: " + status);
                             }
                         }
                     });
@@ -172,7 +182,7 @@ public class FenceHelper implements FenceAccess {
         }
     }
 
-    private void removeOneGeofence(final String key) {
+    private void removeOneGeofence(final Context context, final String key) {
         try {
             final String keyEnter = ENTER_PREFIX + key;
             final String keyExit = EXIT_PREFIX + key;
@@ -189,11 +199,13 @@ public class FenceHelper implements FenceAccess {
                 @Override
                 public void onSuccess(@NonNull Status status) {
                     Log.i(TAG, "Fence " + key + " successfully removed.");
+                    notifyInfo(context, "Fence " + key + " successfully removed.");
                 }
 
                 @Override
                 public void onFailure(@NonNull Status status) {
                     Log.i(TAG, "Fence " + key + " could NOT be removed.");
+                    notifyInfo(context, "Fence " + key + " could NOT be removed.");
                 }
             });
 
@@ -208,5 +220,10 @@ public class FenceHelper implements FenceAccess {
                 "You need to use ACCESS_FINE_LOCATION with geofences", securityException);
     }
 
+    void notifyInfo(Context context, String message) {
+        Intent localIntent = new Intent(LocationConstants.BROADCAST_FENCE_INFO);
+        localIntent.putExtra(LocationConstants.INFO_MESSAGE, message);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(localIntent);
+    }
 
 }

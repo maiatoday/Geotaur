@@ -88,7 +88,7 @@ public class GeofenceTriggerReceiver extends BroadcastReceiver {
                     Log.i(TAG, key+" FALSE");
                     NotificationUtils.notify(context,
                             exitQuip.blurt(),
-                            key,
+                            key + "NOT",
                             R.color.colorExitDwell);
                     break;
                 case FenceState.UNKNOWN:
