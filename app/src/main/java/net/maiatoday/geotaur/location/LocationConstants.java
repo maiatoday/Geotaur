@@ -17,6 +17,7 @@ public final class LocationConstants {
 
     public static final String PACKAGE_NAME = BuildConfig.APPLICATION_ID;
 
+    public static final String BROADCAST_ACTIVITIES = PACKAGE_NAME + ".BROADCAST_ACTIVITIES";
     public static final String BROADCAST_FENCE_INFO = PACKAGE_NAME + ".BROADCAST_FENCE_INFO";
     public static final String INFO_MESSAGE = PACKAGE_NAME + ".INFO_MESSAGE";
 

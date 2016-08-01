@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -272,10 +273,18 @@ public class GeofenceUpdateIntentService extends IntentService implements Google
     public void onResult(@NonNull Status status) {
         if (status.isSuccess()) {
             Log.d(TAG, "onResult: success, ids removed");
+            notifyInfo(this, "Processed successfully");
         } else {
             String errorMessage = GeofenceErrorMessages.getErrorString(this,
                     status.getStatusCode());
             Log.d(TAG, "onResult: fail, ids not removed error: "+ errorMessage);
+            notifyInfo(this, "Fail: "+errorMessage);
         }
+    }
+
+    void notifyInfo(Context context, String message) {
+        Intent localIntent = new Intent(LocationConstants.BROADCAST_FENCE_INFO);
+        localIntent.putExtra(LocationConstants.INFO_MESSAGE, message);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(localIntent);
     }
 }

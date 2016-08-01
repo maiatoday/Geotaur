@@ -33,11 +33,11 @@ public class ActivityTriggerReceiver extends BroadcastReceiver {
          // Awareness triggered walking
         FenceState fenceState = FenceState.extract(intent);
         String key = fenceState.getFenceKey();
-        if (key.startsWith(FenceHelper.WALK_PREFIX)) {
+        if (key.startsWith(FenceHelper.NOT_DRIVING_PREFIX)) {
             switch (fenceState.getCurrentState()) {
                 case FenceState.TRUE:
                     Log.i(TAG, "Fence > walking started inside geofence");
-                    String geofenceId = key.substring(FenceHelper.WALK_PREFIX.length());
+                    String geofenceId = key.substring(FenceHelper.NOT_DRIVING_PREFIX.length());
                     NotificationUtils.notify(context, walkQuip.blurt(), geofenceId, R.color.colorWalk);
                     break;
                 case FenceState.FALSE:
