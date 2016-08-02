@@ -1,6 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
+if (project.hasProperty("geotaur.signing")
+        && new File(project.property("geotaur.signing") + ".gradle").exists()) {
+    apply from: project.property("geotaur.signing") + ".gradle";
+}
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
@@ -60,12 +65,14 @@ dependencies {
     compile "com.google.firebase:firebase-core:$rootProject.firebaseVersion"
     compile "com.google.firebase:firebase-crash:$rootProject.firebaseVersion"
     compile "com.google.firebase:firebase-messaging:$rootProject.firebaseVersion"
+    compile "com.google.firebase:firebase-config:$rootProject.firebaseVersion"
     compile project(path: ':quip')
 
     // Location
     compile "com.google.android.gms:play-services-location:$rootProject.ext.playServicesVersion"
     compile "com.google.android.gms:play-services-gcm:$rootProject.ext.playServicesVersion"
     neoCompile "com.google.android.gms:play-services-contextmanager:$rootProject.ext.playServicesVersion"
+
 
 }
 

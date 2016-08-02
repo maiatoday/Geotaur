@@ -34,6 +34,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import net.maiatoday.geotaur.R;
 import net.maiatoday.geotaur.TaurApplication;
+import net.maiatoday.geotaur.analytics.Analytics;
 import net.maiatoday.geotaur.databinding.ActivityMainBinding;
 import net.maiatoday.geotaur.helpers.PreferenceHelper;
 import net.maiatoday.geotaur.location.FenceAccess;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     SharedPreferences prefs;
 
     @Inject
-    FirebaseAnalytics analytics;
+    Analytics analytics;
 
     @Inject
     @Named("enterQuip")
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
         ((TaurApplication) getApplication()).getComponent().inject(this);
         firstTime = prefs.getBoolean(PreferenceHelper.KEY_FIRST_TIME, true);
         PreferenceHelper.write(prefs, PreferenceHelper.KEY_FIRST_TIME, false);
-        analytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, null);
+        analytics.logEvent(this, FirebaseAnalytics.Event.APP_OPEN, null);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         Toolbar toolbar = binding.toolbar;

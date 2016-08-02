@@ -5,10 +5,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
-
 import net.maiatoday.geotaur.R;
+import net.maiatoday.geotaur.analytics.Analytics;
+import net.maiatoday.geotaur.analytics.AnalyticsImpl;
+import net.maiatoday.geotaur.config.RemoteConfig;
+import net.maiatoday.geotaur.config.RemoteConfigImpl;
 import net.maiatoday.geotaur.helpers.PreferenceHelper;
 import net.maiatoday.geotaur.location.SimpleGeofenceStore;
 import net.maiatoday.quip.Quip;
@@ -46,32 +47,43 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    FirebaseAnalytics provideAnalytics(Context context) {
-        return FirebaseAnalytics.getInstance(context);
+    Analytics provideAnalytics(Context context) {
+        return new AnalyticsImpl(context);
     }
 
-    @Provides @Named("enterQuip")
+    @Provides
     @Singleton
-    Quip provideEnterQuip(Context context) {
+    RemoteConfig providesRemoteConfig(Context context) {
+        RemoteConfig remoteConfig = new RemoteConfigImpl();
+        remoteConfig.fetch(null);
+        return remoteConfig;
+    }
+
+    @Provides
+    @Named("enterQuip")
+    @Singleton
+    Quip provideEnterQuip(Context context, RemoteConfig remoteConfig) {
         Resources res = context.getResources();
         String[] quips = res.getStringArray(R.array.string_array_enter);
-        return new Quip(quips);
+        return new Quip(quips, remoteConfig.getBoolean("enter_random"));
     }
 
-    @Provides  @Named("exitQuip")
+    @Provides
+    @Named("exitQuip")
     @Singleton
-    Quip provideExitQuip(Context context) {
+    Quip provideExitQuip(Context context, RemoteConfig remoteConfig) {
         Resources res = context.getResources();
         String[] quips = res.getStringArray(R.array.string_array_exit);
-        return new Quip(quips);
+        return new Quip(quips, remoteConfig.getBoolean("exit_random"));
     }
 
-    @Provides  @Named("walkQuip")
+    @Provides
+    @Named("walkQuip")
     @Singleton
-    Quip provideWalkQuip(Context context) {
+    Quip provideWalkQuip(Context context, RemoteConfig remoteConfig) {
         Resources res = context.getResources();
         String[] quips = res.getStringArray(R.array.string_array_walk);
-        return new Quip(quips);
+        return new Quip(quips, remoteConfig.getBoolean("walk_random"));
     }
 
     @Provides
