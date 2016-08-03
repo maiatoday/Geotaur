@@ -3,6 +3,8 @@ package net.maiatoday.geotaur.location;
 import android.content.Context;
 import android.util.Log;
 
+import net.maiatoday.geotaur.data.GeofenceStore;
+
 /**
  * A wrapper class around geofence access.
  * Created by maia on 2016/07/30.
@@ -10,7 +12,7 @@ import android.util.Log;
 
 public class FenceHelper implements FenceAccess {
     private static final String TAG = "FenceHelper";
-    public FenceHelper(SimpleGeofenceStore store, Context context) {
+    public FenceHelper(GeofenceStore store, Context context) {
     }
 
     @Override

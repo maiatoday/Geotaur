@@ -7,7 +7,7 @@
 
         <variable
             name="data"
-            type="net.maiatoday.geotaur.location.SimpleGeofence" />
+            type="net.maiatoday.geotaur.data.SimpleGeofence" />
         <variable
             name="handler"
             type="net.maiatoday.geotaur.ui.OnGeofenceItemAction" />

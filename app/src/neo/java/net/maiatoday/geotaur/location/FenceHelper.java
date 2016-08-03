@@ -22,6 +22,8 @@ import com.google.android.gms.common.api.ResultCallbacks;
 import com.google.android.gms.common.api.Status;
 
 import net.maiatoday.geotaur.R;
+import net.maiatoday.geotaur.data.GeofenceStore;
+import net.maiatoday.geotaur.data.SimpleGeofence;
 import net.maiatoday.geotaur.utils.NotificationUtils;
 
 import java.text.SimpleDateFormat;
@@ -42,9 +44,9 @@ public class FenceHelper implements FenceAccess {
     public static final String DWELL_PREFIX = "dwell_";
     private static final long DWELL_MILLIS = 1000;
     private GoogleApiClient apiClient;
-    private final SimpleGeofenceStore geofenceStore;
+    private final GeofenceStore geofenceStore;
 
-    public FenceHelper(SimpleGeofenceStore store, Context context) {
+    public FenceHelper(GeofenceStore store, Context context) {
         geofenceStore = store;
         apiClient = new GoogleApiClient.Builder(context)
                 .addApi(Awareness.API)
@@ -57,7 +59,7 @@ public class FenceHelper implements FenceAccess {
         Log.d(TAG, "addGeofence() called with: ids = [" + ids + "]");
         // get the ids, then get the geofences from the prefs and add them all
         List<String> addIds = new ArrayList<String>(Arrays.asList(ids.split("\\s*,\\s*")));
-        List<SimpleGeofence> simpleGeofenceList = geofenceStore.getGeofencesAsList();
+        List<SimpleGeofence> simpleGeofenceList = geofenceStore.readAll();
         for (SimpleGeofence s : simpleGeofenceList) {
             if (addIds.contains(s.getId())) {
                 addOneGeofence(context,
@@ -73,7 +75,7 @@ public class FenceHelper implements FenceAccess {
     public void addAllGeofences(Context context) {
         Log.d(TAG, "addAllGeofences() called");
         // get the ids, then get the geofences from the prefs and add them all
-        List<SimpleGeofence> simpleGeofenceList = geofenceStore.getGeofencesAsList();
+        List<SimpleGeofence> simpleGeofenceList = geofenceStore.readAll();
         for (SimpleGeofence s : simpleGeofenceList) {
             addOneGeofence(context,
                     s.getId(),
@@ -88,7 +90,7 @@ public class FenceHelper implements FenceAccess {
     public void removeGeofence(Context context, String ids) {
         Log.d(TAG, "removeGeofence() called with: ids = [" + ids + "]");
         List<String> addIds = new ArrayList<String>(Arrays.asList(ids.split("\\s*,\\s*")));
-        List<SimpleGeofence> simpleGeofenceList = geofenceStore.getGeofencesAsList();
+        List<SimpleGeofence> simpleGeofenceList = geofenceStore.readAll();
         for (SimpleGeofence s : simpleGeofenceList) {
             if (addIds.contains(s.getId())) {
                 removeOneGeofence(context, s.getId());

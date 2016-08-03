@@ -1,7 +1,7 @@
 package net.maiatoday.geotaur.ui;
 
 
-import net.maiatoday.geotaur.location.SimpleGeofence;
+import net.maiatoday.geotaur.data.SimpleGeofence;
 
 /**
  * Created by maia on 2016/04/05.

@@ -22,6 +22,8 @@ import com.google.android.gms.location.LocationServices;
 
 import net.maiatoday.geotaur.BuildConfig;
 import net.maiatoday.geotaur.TaurApplication;
+import net.maiatoday.geotaur.data.GeofenceStore;
+import net.maiatoday.geotaur.data.SimpleGeofence;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +48,7 @@ public class GeofenceUpdateIntentService extends IntentService implements Google
 
     @Inject
     // Persistent storage for geofences
-    SimpleGeofenceStore mGeofenceStorage;
+            GeofenceStore mGeofenceStorage;
     /**
      * The list of geofences from a hardcoded list
      */
@@ -133,7 +135,7 @@ public class GeofenceUpdateIntentService extends IntentService implements Google
         mIdsToRemove = null;
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<>();
-        mSimpleGeofenceList = mGeofenceStorage.getGeofencesAsList();
+        mSimpleGeofenceList = mGeofenceStorage.readAll();
         populateGeofenceList(addIds);
         buildGoogleApiClient();
         mGoogleApiClient.connect();
@@ -143,8 +145,8 @@ public class GeofenceUpdateIntentService extends IntentService implements Google
         mIdsToRemove = null;
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<>();
-        mSimpleGeofenceList = mGeofenceStorage.getGeofencesAsList();
-        populateGeofenceList(mGeofenceStorage.getGeofenceIds());
+        mSimpleGeofenceList = mGeofenceStorage.readAll();
+        populateGeofenceList(mGeofenceStorage.getIdsAsList());
         buildGoogleApiClient();
         mGoogleApiClient.connect();
     }

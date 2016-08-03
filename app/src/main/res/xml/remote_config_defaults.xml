@@ -13,5 +13,17 @@
         <key>enter_random</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>walk_use_firebase</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>exit_use_firebase</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>enter_use_firebase</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
 <!-- END xml_defaults -->

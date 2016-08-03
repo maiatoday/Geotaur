@@ -2,17 +2,14 @@ package net.maiatoday.geotaur.ui;
 
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import net.maiatoday.geotaur.R;
 import net.maiatoday.geotaur.databinding.GeofenceItemBinding;
-import net.maiatoday.geotaur.location.SimpleGeofence;
+import net.maiatoday.geotaur.data.SimpleGeofence;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Adapter to provide Geofence data from a list for the Recycler View

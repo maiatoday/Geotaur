@@ -1,9 +1,6 @@
-package net.maiatoday.geotaur.location;
+package net.maiatoday.geotaur.data;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-
-import net.maiatoday.geotaur.helpers.PreferenceHelper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,7 +10,7 @@ import java.util.Set;
 /**
  * Storage for geofence values, implemented in SharedPreferences.
  */
-public class SimpleGeofenceStore {
+public class GeofencePrefsStore implements GeofenceStore {
     /// Key to store a list of all ids
     public static final String KEY_ALL_IDS = "KEY_ALL_IDS";
     /*
@@ -42,7 +39,7 @@ public class SimpleGeofenceStore {
     private final SharedPreferences mPrefs;
 
     // Create the SharedPreferences storage with private access only
-    public SimpleGeofenceStore(SharedPreferences preferences) {
+    public GeofencePrefsStore(SharedPreferences preferences) {
         mPrefs = preferences;
     }
     /**
@@ -52,7 +49,8 @@ public class SimpleGeofenceStore {
      * @param id The ID of a stored geofence
      * @return A geofence defined by its center and radius. See
      */
-    public SimpleGeofence getGeofence(String id) {
+    @Override
+    public SimpleGeofence read(String id) {
             /*
              * Get the latitude for the geofence identified by id, or
              * INVALID_FLOAT_VALUE if it doesn't exist
@@ -98,7 +96,7 @@ public class SimpleGeofenceStore {
                         transitionType != INVALID_INT_VALUE) {
 
             // Return a true Geofence object
-            return new SimpleGeofence(
+            return new SimpleGeofence(id,
                     id, lat, lng, radius, expirationDuration,
                     transitionType);
             // Otherwise, return null.
@@ -112,7 +110,8 @@ public class SimpleGeofenceStore {
      * @param geofence The SimpleGeofence containing the
      * values you want to save in SharedPreferences
      */
-    public void setGeofence(String id, SimpleGeofence geofence) {
+    @Override
+    public void update(String id, SimpleGeofence geofence) {
             /*
              * Get a SharedPreferences editor instance. Among other
              * things, SharedPreferences ensures that updates are atomic
@@ -142,7 +141,8 @@ public class SimpleGeofenceStore {
         editor.apply();
     }
 
-    public void clearGeofence(String id) {
+    @Override
+    public void delete(String id) {
             /*
              * Remove a flattened geofence object from storage by
              * removing all of its keys
@@ -164,12 +164,13 @@ public class SimpleGeofenceStore {
      * Get all the geofences stores as a list.
      * @return List of all the stored geofences
      */
-    public List<SimpleGeofence> getGeofencesAsList() {
+    @Override
+    public List<SimpleGeofence> readAll() {
         List<SimpleGeofence> allGeofences = new ArrayList<>();
         Set<String> allIdsSet = mPrefs.getStringSet(KEY_ALL_IDS, null);
         if (allIdsSet != null) {
             for (String id: allIdsSet) {
-                allGeofences.add(getGeofence(id));
+                allGeofences.add(read(id));
             }
         }
         return allGeofences;
@@ -180,7 +181,8 @@ public class SimpleGeofenceStore {
      * Get a list of the stored geofence ids.
      * @return List of id strings
      */
-    public List<String> getGeofenceIds() {
+    @Override
+    public List<String> getIdsAsList() {
         Set<String> allIdsSet = mPrefs.getStringSet(KEY_ALL_IDS, null);
         List<String> ids;
         if (allIdsSet != null) {
@@ -192,7 +194,8 @@ public class SimpleGeofenceStore {
         return ids;
     }
 
-    public String getGeofenceIdsAsString() {
+    @Override
+    public String getIdsAsString() {
         StringBuilder result = new StringBuilder();
         Set<String> allIdsSet = mPrefs.getStringSet(KEY_ALL_IDS, null);
         int i = 0;

@@ -1,4 +1,4 @@
-package net.maiatoday.geotaur.location;
+package net.maiatoday.geotaur.data;
 
 import com.google.android.gms.location.Geofence;
 
@@ -7,15 +7,16 @@ import com.google.android.gms.location.Geofence;
  */
 public class SimpleGeofence {
     // Instance variables
-    private final String mId;
-    private final double mLatitude;
-    private final double mLongitude;
-    private final float mRadius;
-    private long mExpirationDuration;
-    private int mTransitionType;
+    private final String id;
+    private final double latitude;
+    private final double longitude;
+    private final float radius;
+    private long expirationDuration;
+    private int transitionType;
+    private String title;
 
     /**
-     * @param geofenceId The Geofence's request ID
+     * @param id The Geofence's request ID
      * @param latitude Latitude of the Geofence's center.
      * @param longitude Longitude of the Geofence's center.
      * @param radius Radius of the geofence circle.
@@ -23,46 +24,50 @@ public class SimpleGeofence {
      * @param transition Type of Geofence transition.
      */
     public SimpleGeofence(
-            String geofenceId,
+            String id,
+            String title,
             double latitude,
             double longitude,
             float radius,
             long expiration,
             int transition) {
         // Set the instance fields from the constructor
-        this.mId = geofenceId;
-        this.mLatitude = latitude;
-        this.mLongitude = longitude;
-        this.mRadius = radius;
-        this.mExpirationDuration = expiration;
-        this.mTransitionType = transition;
+        this.id = id;
+        this.title = title;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.radius = radius;
+        this.expirationDuration = expiration;
+        this.transitionType = transition;
     }
     // Instance field getters
     public String getId() {
-        return mId;
+        return id;
     }
     public double getLatitude() {
-        return mLatitude;
+        return latitude;
     }
     public String getLatitudeText() {
-        return String.format("%1$,.6f", mLatitude);
+        return String.format("%1$,.6f", latitude);
     }
     public double getLongitude() {
-        return mLongitude;
+        return longitude;
     }
     public String getLongitudeText() {
-        return String.format("%1$,.6f", mLongitude);
+        return String.format("%1$,.6f", longitude);
     }
     public float getRadius() {
-        return mRadius;
+        return radius;
     }
     public long getExpirationDuration() {
-        return mExpirationDuration;
+        return expirationDuration;
     }
     public int getTransitionType() {
-        return mTransitionType;
+        return transitionType;
     }
-    public String getRadiusText() {return mRadius+"m";}
+    public String getRadiusText() {return radius +"m";}
+    public String getTitle() { return title; }
+
     /**
      * Creates a Location Services Geofence object from a
      * SimpleGeofence.
@@ -73,11 +78,11 @@ public class SimpleGeofence {
         // Build a new Geofence object
         return new Geofence.Builder()
                 .setRequestId(getId())
-                .setTransitionTypes(mTransitionType)
+                .setTransitionTypes(transitionType)
 //                .setNotificationResponsiveness(LocationConstants.NOTIFICATION_RESPONSIVENESS_MS)
                 .setCircularRegion(
                         getLatitude(), getLongitude(), getRadius())
-                .setExpirationDuration(mExpirationDuration)
+                .setExpirationDuration(expirationDuration)
                 .build();
     }
 }

@@ -31,17 +31,22 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.Geofence;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import net.maiatoday.geotaur.R;
 import net.maiatoday.geotaur.TaurApplication;
 import net.maiatoday.geotaur.analytics.Analytics;
+import net.maiatoday.geotaur.data.GeofenceStore;
 import net.maiatoday.geotaur.databinding.ActivityMainBinding;
 import net.maiatoday.geotaur.helpers.PreferenceHelper;
 import net.maiatoday.geotaur.location.FenceAccess;
 import net.maiatoday.geotaur.location.LocationAccess;
 import net.maiatoday.geotaur.location.LocationConstants;
-import net.maiatoday.geotaur.location.SimpleGeofence;
-import net.maiatoday.geotaur.location.SimpleGeofenceStore;
+import net.maiatoday.geotaur.data.SimpleGeofence;
 import net.maiatoday.quip.Quip;
 
 import java.util.ArrayList;
@@ -82,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     LocationAccess locationAccess;
 
     @Inject
-    SimpleGeofenceStore mGeofenceStorage;
+    GeofenceStore mGeofenceStorage;
 
     private boolean firstTime;
     private ActivityMainBinding binding;
@@ -122,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
         }
 
         mSimpleGeofenceList = new ArrayList<>();
-        mSimpleGeofenceList = mGeofenceStorage.getGeofencesAsList();
+        mSimpleGeofenceList = mGeofenceStorage.readAll();
         mLandmarkRV = (RecyclerView) findViewById(R.id.geofence_list);
         mAdapter = new GeofenceListAdapter(mSimpleGeofenceList, this);
         mLandmarkRV.setAdapter(mAdapter);
@@ -162,6 +167,24 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("geo_lure");
+            // Read from the database
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // This method is called once with the initial value and again
+                    // whenever data at this location is updated.
+                    String value = dataSnapshot.getValue(String.class);
+                    Log.d(TAG, "Value is: " + value);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                    Log.w(TAG, "Failed to read value.", error.toException());
+                }
+            });
             return true;
         }
 
@@ -207,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
      * previously registered geofences.
      */
     public void removeGeofencesButtonHandler(View view) {
-        fenceAccess.removeGeofence(this, mGeofenceStorage.getGeofenceIdsAsString());
+        fenceAccess.removeGeofence(this, mGeofenceStorage.getIdsAsString());
     }
 
     private void setButtonsEnabledState() {
@@ -258,16 +281,16 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     @Override
     public void onAddGeofence(String title, String radius, String latitude, String longtitude) {
         Log.d(TAG, "onAddGeofence: " + title + " " + radius + " " + latitude + ", " + longtitude);
-        SimpleGeofence simpleGeofence = mGeofenceStorage.getGeofence(title);
+        SimpleGeofence simpleGeofence = mGeofenceStorage.read(title);
         if (simpleGeofence != null) {
             int i = findItemIndexInList(title);
             if (i != -1) {
                 mSimpleGeofenceList.remove(i);
                 mAdapter.notifyItemRemoved(i);
-                mGeofenceStorage.clearGeofence(title);
+                mGeofenceStorage.delete(title);
             }
         }
-        simpleGeofence = new SimpleGeofence(title,
+        simpleGeofence = new SimpleGeofence(title, title,
                 Double.valueOf(latitude),
                 Double.valueOf(longtitude),
                 Float.valueOf(radius),
@@ -275,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
                 Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT);
         mSimpleGeofenceList.add(simpleGeofence);
         mAdapter.notifyItemInserted(mSimpleGeofenceList.size() - 1);
-        mGeofenceStorage.setGeofence(title, simpleGeofence);
+        mGeofenceStorage.update(title, simpleGeofence);
         mLastAction = "Add " + title + "\n";
         fenceAccess.addGeofence(this, title);
     }
@@ -317,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
     @Override
     public void onItemRemoved(String id) {
         fenceAccess.removeGeofence(this, id);
-        mGeofenceStorage.clearGeofence(id);
+        mGeofenceStorage.delete(id);
     }
 
 

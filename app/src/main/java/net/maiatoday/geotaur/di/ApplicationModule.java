@@ -10,8 +10,10 @@ import net.maiatoday.geotaur.analytics.Analytics;
 import net.maiatoday.geotaur.analytics.AnalyticsImpl;
 import net.maiatoday.geotaur.config.RemoteConfig;
 import net.maiatoday.geotaur.config.RemoteConfigImpl;
+import net.maiatoday.geotaur.data.GeofencePrefsStore;
+import net.maiatoday.geotaur.data.GeofenceStore;
+import net.maiatoday.geotaur.helpers.FirebaseHelper;
 import net.maiatoday.geotaur.helpers.PreferenceHelper;
-import net.maiatoday.geotaur.location.SimpleGeofenceStore;
 import net.maiatoday.quip.Quip;
 
 import javax.inject.Named;
@@ -26,6 +28,7 @@ import dagger.Provides;
  */
 @Module
 public class ApplicationModule {
+    private static final String TAG = "ApplicationModule";
 
     private final Application application;
 
@@ -65,7 +68,12 @@ public class ApplicationModule {
     Quip provideEnterQuip(Context context, RemoteConfig remoteConfig) {
         Resources res = context.getResources();
         String[] quips = res.getStringArray(R.array.string_array_enter);
-        return new Quip(quips, remoteConfig.getBoolean("enter_random"));
+        final Quip result = new Quip(quips, remoteConfig.getBoolean("enter_random"));
+        boolean useFirebase = remoteConfig.getBoolean("enter_use_firebase");
+        if (useFirebase) {
+            FirebaseHelper.getQuipsFromFirebase(result, FirebaseHelper.QUIP_ENTER_KEY);
+        }
+        return result;
     }
 
     @Provides
@@ -74,7 +82,12 @@ public class ApplicationModule {
     Quip provideExitQuip(Context context, RemoteConfig remoteConfig) {
         Resources res = context.getResources();
         String[] quips = res.getStringArray(R.array.string_array_exit);
-        return new Quip(quips, remoteConfig.getBoolean("exit_random"));
+        final Quip result = new Quip(quips, remoteConfig.getBoolean("exit_random"));
+        boolean useFirebase = remoteConfig.getBoolean("exit_use_firebase");
+        if (useFirebase) {
+            FirebaseHelper.getQuipsFromFirebase(result, FirebaseHelper.QUIP_EXIT_KEY);
+        }
+        return result;
     }
 
     @Provides
@@ -82,12 +95,18 @@ public class ApplicationModule {
     @Singleton
     Quip provideWalkQuip(Context context, RemoteConfig remoteConfig) {
         Resources res = context.getResources();
-        String[] quips = res.getStringArray(R.array.string_array_walk);
-        return new Quip(quips, remoteConfig.getBoolean("walk_random"));
+        final String[] quips = res.getStringArray(R.array.string_array_walk);
+        final Quip result = new Quip(quips, remoteConfig.getBoolean("walk_random"));
+        boolean useFirebase = remoteConfig.getBoolean("walk_use_firebase");
+        if (useFirebase) {
+            FirebaseHelper.getQuipsFromFirebase(result, FirebaseHelper.QUIP_WALK_KEY);
+        }
+        return result;
     }
 
     @Provides
-    SimpleGeofenceStore providesGeofenceStore(SharedPreferences preferences) {
-        return new SimpleGeofenceStore(preferences);
+    GeofenceStore providesGeofenceStore(Context context) {
+        SharedPreferences preferences = provideSharedPreferences(context);
+        return new GeofencePrefsStore(preferences);
     }
 }
