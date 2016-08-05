@@ -28,7 +28,7 @@ task clean(type: Delete) {
 ext {
     // App dependencies
     supportLibraryVersion = '24.1.1'
-    playServicesVersion = '9.2.1'
+    playServicesVersion = '9.4.0'
     commons_ioVersion = '2.4'
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
@@ -38,6 +38,6 @@ ext {
     uiautomatorVersion = '2.1.2'
     daggerVersion = '2.2'
     javaxAnnotationsVersion = '1.0'
-    firebaseVersion = '9.2.1'
+    firebaseVersion = '9.4.0'
     constraintLayoutVersion = '1.0.0-alpha4'
 }
