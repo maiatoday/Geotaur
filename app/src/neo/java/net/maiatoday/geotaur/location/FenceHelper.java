@@ -40,7 +40,8 @@ public class FenceHelper implements FenceAccess {
     private static final String TAG = "FenceHelper";
     public static final String ENTER_PREFIX = "enter_";
     public static final String EXIT_PREFIX = "exit_";
-    public static final String NOT_DRIVING_PREFIX = "not_driving_";
+  //  public static final String NOT_DRIVING_PREFIX = "not_driving_";
+    public static final String WALKING_IN_DWELL_PREFIX = "walking_in_dwell_";
     public static final String DWELL_PREFIX = "dwell_";
     private static final long DWELL_MILLIS = 1000;
     private GoogleApiClient apiClient;
@@ -103,10 +104,10 @@ public class FenceHelper implements FenceAccess {
 
         final String keyEnter = ENTER_PREFIX + fenceKey;
         final String keyExit = EXIT_PREFIX + fenceKey;
-        final String keyWalk = NOT_DRIVING_PREFIX + fenceKey;
+        final String keyWalkingInDwell = WALKING_IN_DWELL_PREFIX + fenceKey;
         final String keyDwell = DWELL_PREFIX + fenceKey;
         Awareness.FenceApi.queryFences(apiClient,
-                FenceQueryRequest.forFences(Arrays.asList(keyEnter, keyExit, keyDwell, keyWalk)))
+                FenceQueryRequest.forFences(Arrays.asList(keyEnter, keyExit, keyDwell, keyWalkingInDwell)))
                 .setResultCallback(new ResultCallback<FenceQueryResult>() {
                     @Override
                     public void onResult(@NonNull FenceQueryResult fenceQueryResult) {
@@ -145,23 +146,25 @@ public class FenceHelper implements FenceAccess {
             AwarenessFence geoFenceEnter = LocationFence.entering(lat, lon, radius);
             AwarenessFence geoFenceExit = LocationFence.exiting(lat, lon, radius);
             AwarenessFence geoFenceDwell = LocationFence.in(lat, lon, radius, DWELL_MILLIS);
-            AwarenessFence notDriving = AwarenessFence.not(DetectedActivityFence.during(DetectedActivityFence.IN_VEHICLE));
-            AwarenessFence notDrivingInLocation = AwarenessFence.and(LocationFence.in(lat, lon, radius, DWELL_MILLIS),
-                    notDriving);
+            AwarenessFence walkingFence = DetectedActivityFence.during(DetectedActivityFence.WALKING);
+            // Create a combination fence to AND primitive fences.
+            AwarenessFence walkingInDwell = AwarenessFence.and(
+                    walkingFence, geoFenceDwell
+            );
 
             final String keyEnter = ENTER_PREFIX + key;
             final String keyExit  = EXIT_PREFIX + key;
-            final String keyNotDriving  = NOT_DRIVING_PREFIX + key;
+            final String keyWalkingInDwell  = WALKING_IN_DWELL_PREFIX + key;
             final String keyDwell = DWELL_PREFIX + key;
             PendingIntent pendingIntentGeo = GeofenceTriggerReceiver.getTriggerPendingIntent(context);
-            PendingIntent pendingIntentNotDriving = ActivityTriggerReceiver.getTriggerPendingIntent(context);
+            PendingIntent pendingIntentWalkingInDwell = ActivityTriggerReceiver.getTriggerPendingIntent(context);
             Awareness.FenceApi.updateFences(
                     apiClient,
                     new FenceUpdateRequest.Builder()
                             .addFence(keyEnter, geoFenceEnter, pendingIntentGeo)
                             .addFence(keyExit, geoFenceExit, pendingIntentGeo)
                             .addFence(keyDwell, geoFenceDwell, pendingIntentGeo)
-                            .addFence(keyNotDriving, notDrivingInLocation, pendingIntentNotDriving)
+                            .addFence(keyWalkingInDwell, walkingInDwell, pendingIntentWalkingInDwell)
                             .build())
                     .setResultCallback(new ResultCallback<Status>() {
                         @Override
@@ -185,14 +188,14 @@ public class FenceHelper implements FenceAccess {
         try {
             final String keyEnter = ENTER_PREFIX + key;
             final String keyExit = EXIT_PREFIX + key;
-            final String keyNotDriving = NOT_DRIVING_PREFIX + key;
+            final String keyWalkingInDwell = WALKING_IN_DWELL_PREFIX + key;
             final String keyDwell = DWELL_PREFIX + key;
             Awareness.FenceApi.updateFences(
                     apiClient,
                     new FenceUpdateRequest.Builder()
                             .removeFence(keyEnter)
                             .removeFence(keyExit)
-                            .removeFence(keyNotDriving)
+                            .removeFence(keyWalkingInDwell)
                             .removeFence(keyDwell)
                             .build()).setResultCallback(new ResultCallbacks<Status>() {
                 @Override
