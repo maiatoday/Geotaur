@@ -15,12 +15,12 @@ Also in this sampler app:
 * recycler views with databinding
 
 This is a WIP:
--[ ] fix walk detection
--[ ] anonymous firebase login
--[ ] store geo lures in firebase
--[ ] login convert to google login
--[ ] compound individual quips in multiple notification to one notification
--[ ] make the fence info not display in a toast that disappears
+- [ ] fix walk detection
+- [ ] anonymous firebase login
+- [ ] store geo lures in firebase
+- [ ] login convert to google login
+- [ ] compound individual quips in multiple notification to one notification
+- [ ] make the fence info not display in a toast that disappears
 
 # Getting started
 If you want to mess with this example you need to clone it and the submodule.
