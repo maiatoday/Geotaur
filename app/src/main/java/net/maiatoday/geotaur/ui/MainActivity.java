@@ -358,7 +358,9 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
 
     @Override
     public void onItemInfo(SimpleGeofence item) {
-        fenceAccess.queryGeofence(this, item.getId());
+        FragmentManager fm = getSupportFragmentManager();
+        InfoGeoDialogFragment dialogFragment = InfoGeoDialogFragment.newInstance(item.getId());
+        dialogFragment.show(fm, AddGeoDialogFragment.getFragmentTag());
     }
 
     @Override
@@ -388,11 +390,8 @@ public class MainActivity extends AppCompatActivity implements AddGeoDialogFragm
         public void onReceive(Context context, Intent intent) {
             if (intent.hasExtra(LocationConstants.INFO_MESSAGE)) {
                 String message = intent.getExtras().getString(LocationConstants.INFO_MESSAGE);
-                Snackbar.make(mMainView, message, Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(mMainView, message, Snackbar.LENGTH_SHORT)
                         .setAction(android.R.string.ok, null).show();
-                if (message.length() > 24) {
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                }
             }
         }
     }

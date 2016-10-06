@@ -25,6 +25,7 @@
 package net.maiatoday.geotaur.di;
 
 import net.maiatoday.geotaur.location.BootReceiver;
+import net.maiatoday.geotaur.ui.InfoGeoDialogFragment;
 import net.maiatoday.geotaur.ui.MainActivity;
 
 /**
@@ -35,4 +36,5 @@ import net.maiatoday.geotaur.ui.MainActivity;
 public interface BaseComponent {
     void inject(MainActivity target);
     void inject(BootReceiver target);
+    void inject(InfoGeoDialogFragment target);
 }

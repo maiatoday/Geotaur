@@ -56,7 +56,7 @@ public class FenceHelper implements FenceAccess {
 
     @Override
     public void queryGeofence(Context context, String id) {
-        Log.d(TAG, "queryGeofence: Hrmph not possible");
+        GeofenceUpdateIntentService.infoGeofences(context);
     }
 
     @Override

@@ -65,6 +65,7 @@ public class GeofenceUpdateIntentService extends IntentService implements Google
     private static final String ACTION_REMOVE_GEOFENCE = BuildConfig.APPLICATION_ID+".REMOVE_GEOFENCE";
     private static final String ACTION_ADD_GEOFENCE = BuildConfig.APPLICATION_ID+".ADD_GEOFENCE";
     private static final String ACTION_ADD_ALL_GEOFENCE = BuildConfig.APPLICATION_ID+".ADD_ALL_GEOFENCE";
+    private static final String ACTION_INFO_GEOFENCE = BuildConfig.APPLICATION_ID+".INFO_GEOFENCE";
     private static final String EXTRA_PARAM_GEOFENCE_IDS = BuildConfig.APPLICATION_ID+".extra.PARAM_GEOFENCE_IDS";
 
     @Inject
@@ -138,17 +139,36 @@ public class GeofenceUpdateIntentService extends IntentService implements Google
         context.startService(intent);
     }
 
+    /**
+     * Starts this service to get info about the geofences
+     *
+     * @see IntentService
+     */
+
+    public static void infoGeofences(Context context) {
+        Intent intent = new Intent(context, GeofenceUpdateIntentService.class);
+        intent.setAction(ACTION_INFO_GEOFENCE);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
             final String ids = intent.getStringExtra(EXTRA_PARAM_GEOFENCE_IDS);
-            if (ACTION_REMOVE_GEOFENCE.equals(action)) {
-                handleRemoveGeofenceIds(ids);
-            } else if (ACTION_ADD_GEOFENCE.equals(action)) {
-                handleAddGeofenceIds(ids);
-            } else if (ACTION_ADD_ALL_GEOFENCE.equals(action)) {
-                handleAddAllGeofenceIds();
+            switch(action) {
+                case ACTION_REMOVE_GEOFENCE:
+                    handleRemoveGeofenceIds(ids);
+                    break;
+                case ACTION_ADD_GEOFENCE:
+                    handleAddGeofenceIds(ids);
+                    break;
+                case ACTION_ADD_ALL_GEOFENCE:
+                    handleAddAllGeofenceIds();
+                    break;
+                case ACTION_INFO_GEOFENCE:
+                    handleInfoGeofences();
+                    break;
             }
         }
     }
@@ -224,6 +244,10 @@ public class GeofenceUpdateIntentService extends IntentService implements Google
                 logSecurityException(securityException);
             }
         }
+    }
+
+    private void handleInfoGeofences() {
+        notifyInfo(this, "Hrmph feature not supported by API");
     }
 
     /**

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ MIT License
   ~
@@ -22,15 +23,25 @@
   ~ SOFTWARE.
   -->
 
-<resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="grid_half">4dp</dimen>
-    <dimen name="grid1">8dp</dimen>
-    <dimen name="grid2">16dp</dimen>
-    <dimen name="grid3">24dp</dimen>
-    <dimen name="minTextWidth">250dp</dimen>
-    <dimen name="minTouch">48dp</dimen>
-</resources>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/grid3">
+
+        <TextView
+            android:id="@+id/info_geo_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/info_geo_ok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/OK"/>
+
+    </LinearLayout>
+</layout>

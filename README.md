@@ -20,7 +20,7 @@ This is a WIP:
 - [ ] store geo lures in firebase
 - [ ] login convert to google login
 - [ ] compound individual quips in multiple notification to one notification
-- [ ] make the fence info not display in a toast that disappears
+- [x] make the fence info not display in a toast that disappears
 
 # Getting started
 If you want to mess with this example you need to clone it and the submodule.

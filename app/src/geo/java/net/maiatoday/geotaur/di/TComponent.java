@@ -28,6 +28,7 @@ import net.maiatoday.geotaur.location.BootReceiver;
 import net.maiatoday.geotaur.location.ActivityDetectTriggerIntentService;
 import net.maiatoday.geotaur.location.GeofenceTriggerReceiver;
 import net.maiatoday.geotaur.location.GeofenceUpdateIntentService;
+import net.maiatoday.geotaur.ui.InfoGeoDialogFragment;
 import net.maiatoday.geotaur.ui.MainActivity;
 
 /**
