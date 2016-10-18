@@ -32,7 +32,7 @@ if (project.hasProperty("geotaur.signing")
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "net.maiatoday.geotaur"
         minSdkVersion 16
@@ -80,6 +80,7 @@ dependencies {
     compile "com.android.support:design:$rootProject.supportLibraryVersion"
     compile "com.android.support:cardview-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support.constraint:constraint-layout:$rootProject.constraintLayoutVersion"
 
     // Testing
     testCompile "junit:junit:$rootProject.junitVersion"
@@ -90,14 +91,14 @@ dependencies {
     compile "com.google.firebase:firebase-messaging:$rootProject.firebaseVersion"
     compile "com.google.firebase:firebase-config:$rootProject.firebaseVersion"
     compile "com.google.firebase:firebase-database:$rootProject.firebaseVersion"
+    compile "com.google.firebase:firebase-auth:$rootProject.firebaseVersion"
     compile project(path: ':quip')
 
     // Location
     compile "com.google.android.gms:play-services-location:$rootProject.ext.playServicesVersion"
     compile "com.google.android.gms:play-services-gcm:$rootProject.ext.playServicesVersion"
-    neoCompile "com.google.android.gms:play-services-contextmanager:$rootProject.ext.playServicesVersion"
+    //neoCompile "com.google.android.gms:play-services-contextmanager:$rootProject.ext.playServicesVersion"
 
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
 }
 
 apply plugin: 'com.google.gms.google-services'
