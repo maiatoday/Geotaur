@@ -30,9 +30,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 
+import net.maiatoday.geotaur.BuildConfig;
 import net.maiatoday.geotaur.R;
 import net.maiatoday.geotaur.ui.MainActivity;
 
@@ -67,6 +69,7 @@ public class NotificationUtils {
                         R.mipmap.ic_launcher))
                 .setColor(ContextCompat.getColor(context, colorId))
                 .setContentTitle(title)
+                .setGroup(BuildConfig.FLAVOR)
                 .setContentText(message)
                 .setContentIntent(notificationPendingIntent);
 
@@ -74,8 +77,7 @@ public class NotificationUtils {
         builder.setAutoCancel(true);
 
         // Get an instance of the Notification manager
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
 
         // Issue the notification
         mNotificationManager.notify(colorId, builder.build());

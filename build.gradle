@@ -29,7 +29,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.2.2'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 
@@ -51,8 +51,8 @@ task clean(type: Delete) {
 // Define versions in a single place
 ext {
     // App dependencies
-    supportLibraryVersion = '24.1.1'
-    playServicesVersion = '9.4.0'
+    supportLibraryVersion = '25.0.0'
+    playServicesVersion = '9.6.1'
     commons_ioVersion = '2.4'
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
@@ -62,6 +62,6 @@ ext {
     uiautomatorVersion = '2.1.2'
     daggerVersion = '2.2'
     javaxAnnotationsVersion = '1.0'
-    firebaseVersion = '9.4.0'
-    constraintLayoutVersion = '1.0.0-alpha4'
+    firebaseVersion = playServicesVersion
+    constraintLayoutVersion = '1.0.0-alpha9'
 }
