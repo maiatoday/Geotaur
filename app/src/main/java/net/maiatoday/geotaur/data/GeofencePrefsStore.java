@@ -222,15 +222,17 @@ public class GeofencePrefsStore implements GeofenceStore {
     public String getIdsAsString() {
         StringBuilder result = new StringBuilder();
         Set<String> allIdsSet = mPrefs.getStringSet(KEY_ALL_IDS, null);
-        int i = 0;
-        for (String id: allIdsSet) {
-            result.append(id);
-            i++;
-            if (i < allIdsSet.size()) {
-                result.append(",");
+        if (allIdsSet != null) {
+            int i = 0;
+            for (String id : allIdsSet) {
+                result.append(id);
+                i++;
+                if (i < allIdsSet.size()) {
+                    result.append(",");
+                }
+
+
             }
-
-
         }
         return result.toString();
     }

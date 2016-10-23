@@ -29,7 +29,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.1'
+        classpath 'com.android.tools.build:gradle:2.2.2'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 
@@ -51,7 +51,7 @@ task clean(type: Delete) {
 // Define versions in a single place
 ext {
     // App dependencies
-    supportLibraryVersion = '24.2.1'
+    supportLibraryVersion = '25.0.0'
     playServicesVersion = '9.6.1'
     commons_ioVersion = '2.4'
     junitVersion = '4.12'

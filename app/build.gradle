@@ -31,12 +31,12 @@ if (project.hasProperty("geotaur.signing")
 }
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    compileSdkVersion 25
+    buildToolsVersion "24.0.3"
     defaultConfig {
         applicationId "net.maiatoday.geotaur"
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName "0.1"
         vectorDrawables.useSupportLibrary = true
@@ -97,7 +97,7 @@ dependencies {
     // Location
     compile "com.google.android.gms:play-services-location:$rootProject.ext.playServicesVersion"
     compile "com.google.android.gms:play-services-gcm:$rootProject.ext.playServicesVersion"
-    //neoCompile "com.google.android.gms:play-services-contextmanager:$rootProject.ext.playServicesVersion"
+    neoCompile "com.google.android.gms:play-services-awareness:$rootProject.ext.playServicesVersion"
 
 }
 
