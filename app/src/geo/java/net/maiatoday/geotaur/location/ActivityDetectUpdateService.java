@@ -45,7 +45,7 @@ import net.maiatoday.geotaur.R;
  * This service is used to setup activity detecting
  */
 public class ActivityDetectUpdateService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
-    private static final String TAG = "ActivityDetectUpdateService";
+    private static final String TAG = "ActivityDetectUpdateSer";
     public static final String EXTRA_GEOFENCE_ID = "geofence_id";
     private String mGeofenceIds = "Unknown";
 
